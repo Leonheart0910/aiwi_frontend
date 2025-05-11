@@ -1,0 +1,414 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 최소한의 전역 스타일만 유지 */
+/* 기본 스타일 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+body {
+  background-color: #fff;
+  color: #333;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+  width: 260px;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.sidebar-heading {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.sidebar-link:hover {
+  background-color: #f3f4f6;
+}
+
+.sidebar-link.small {
+  font-size: 14px;
+  gap: 8px;
+}
+
+.sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.sidebar-icon.blue {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+
+.sidebar-icon.purple {
+  background-color: #f3e8ff;
+  color: #a855f7;
+}
+
+.sidebar-icon.green {
+  background-color: #dcfce7;
+  color: #22c55e;
+}
+
+.sidebar-text {
+  font-weight: 500;
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.recommended-product {
+  margin-top: auto;
+  border-top: 1px solid #e5e7eb;
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.product-card:hover {
+  background-color: #f3f4f6;
+}
+
+.product-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #e5e7eb;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.product-price {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* 메인 콘텐츠 스타일 */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 헤더 스타일 */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background-color: #f3f4f6;
+}
+
+.icon-button.small {
+  width: 32px;
+  height: 32px;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: #ef4444;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.user-menu-container {
+  position: relative;
+}
+
+.user-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  width: 260px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  display: none;
+}
+
+.user-menu.active {
+  display: block;
+}
+
+.user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.user-menu-item:hover {
+  background-color: #f3f4f6;
+  border-radius: 6px;
+}
+
+.menu-divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 4px 0;
+}
+
+/* 채팅 영역 스타일 */
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.empty-chat {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.empty-chat-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-width: 400px;
+}
+
+.suggestion-button {
+  height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.suggestion-button:hover {
+  background-color: #f9fafb;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.message {
+  display: flex;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.assistant {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 80%;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.message.user .message-bubble {
+  background-color: #f3f4f6;
+}
+
+.message.assistant .message-bubble {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+}
+
+/* 입력 영역 스타일 */
+.input-container {
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.chat-form {
+  position: relative;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.input-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+}
+
+.input-action-text {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.input-divider {
+  height: 24px;
+  width: 1px;
+  background-color: #e5e7eb;
+  margin: 0 4px;
+}
+
+.message-input {
+  flex: 1;
+  border: none;
+  padding: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 240px;
+  }
+
+  .suggestion-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+  }
+
+  .header-title {
+    font-size: 16px;
+  }
+}
