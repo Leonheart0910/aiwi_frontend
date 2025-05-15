@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-
 import { Sidebar } from "@/components/sidebar";
 import { ChatInterface } from "@/components/chat-interface";
 import { UserMenu } from "@/components/user-menu";
 import { Button } from "@/components/button";
+import { ChatProvider, useChat } from "@/contexts/chat-context";
 import {
-  SearchIcon,
+  MenuIcon,
   PenIcon,
   ChevronDownIcon,
   ShareIcon,
@@ -13,10 +13,12 @@ import {
 } from "@/components/icons";
 
 // Home 컴포넌트
-export default function Home() {
+function HomeContent() {
   // 사용자 메뉴
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const userMenuRef = useRef(null);
+  const { startNewChat } = useChat();
 
   // 사용자 메뉴 외부 클릭 이벤트 처리
   useEffect(() => {
@@ -36,20 +38,44 @@ export default function Home() {
     };
   }, []);
 
+  // 새 채팅 시작 핸들러
+  const handleNewChat = () => {
+    startNewChat();
+    setIsSidebarOpen(true); // 새 채팅 시작 시 사이드바 열기
+  };
+
   return (
     <div className="flex h-screen bg-white">
       {/* 사이드바 */}
-      <Sidebar />
+      <div
+        className={`${
+          isSidebarOpen ? "w-64" : "w-0"
+        } transition-all duration-300 ease-in-out overflow-hidden`}
+      >
+        <div className="w-64">
+          <Sidebar />
+        </div>
+      </div>
 
       {/* 메인 컨테이너 */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* 헤더 */}
         <header className="flex items-center justify-between p-2 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-gray-500">
-              <SearchIcon className="h-5 w-5" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-500"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              <MenuIcon className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-gray-500">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-500"
+              onClick={handleNewChat}
+            >
               <PenIcon className="h-5 w-5" />
             </Button>
           </div>
@@ -88,5 +114,14 @@ export default function Home() {
         <ChatInterface />
       </main>
     </div>
+  );
+}
+
+// 루트 컴포넌트
+export default function Home() {
+  return (
+    <ChatProvider>
+      <HomeContent />
+    </ChatProvider>
   );
 }

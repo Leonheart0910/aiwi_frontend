@@ -4,10 +4,36 @@ import {
   ClockIcon,
   ExternalLinkIcon,
 } from "@/components/icons";
+import { useChat } from "@/contexts/chat-context";
 import recommendationBook from "@/assets/recommendation_book.png";
 
 // 사이드바 컴포넌트
 export function Sidebar() {
+  const { chatLogs, loadChat, currentChatId } = useChat();
+
+  // 채팅 로그를 날짜별로 그룹화
+  const groupedChats = chatLogs.reduce((groups, chat) => {
+    const date = new Date(chat.timestamp);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    let group;
+    if (date.toDateString() === today.toDateString()) {
+      group = "오늘";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      group = "어제";
+    } else {
+      group = "이전 기록";
+    }
+
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    groups[group].push(chat);
+    return groups;
+  }, {});
+
   return (
     <aside className="w-64 border-r border-gray-200 flex flex-col h-full bg-white">
       {/* 광고 사이트 링크 */}
@@ -96,41 +122,27 @@ export function Sidebar() {
       </div>
 
       {/* 채팅 로그 */}
-      <div className="mt-4 px-3">
-        <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">오늘</h2>
-        <div className="space-y-1">
-          <a
-            href="#"
-            className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm"
-          >
-            <ClockIcon className="h-4 w-4 text-gray-500" />
-            <span>오늘의 쇼핑</span>
-          </a>
+      {Object.entries(groupedChats).map(([group, chats]) => (
+        <div key={group} className="mt-4 px-3">
+          <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">
+            {group}
+          </h2>
+          <div className="space-y-1">
+            {chats.map((chat) => (
+              <button
+                key={chat.id}
+                onClick={() => loadChat(chat.id)}
+                className={`w-full flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm ${
+                  chat.id === currentChatId ? "bg-gray-100" : ""
+                }`}
+              >
+                <ClockIcon className="h-4 w-4 text-gray-500" />
+                <span className="truncate">{chat.title}</span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-
-      {/* 이전 기록 */}
-      <div className="mt-4 px-3">
-        <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">
-          이전 기록
-        </h2>
-        <div className="space-y-1">
-          <a
-            href="#"
-            className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm"
-          >
-            <ClockIcon className="h-4 w-4 text-gray-500" />
-            <span>어제의 쇼핑</span>
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm"
-          >
-            <ClockIcon className="h-4 w-4 text-gray-500" />
-            <span>지난주 쇼핑</span>
-          </a>
-        </div>
-      </div>
+      ))}
     </aside>
   );
 }

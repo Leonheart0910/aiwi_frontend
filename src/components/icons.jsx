@@ -1,19 +1,21 @@
 // 검색 아이콘 컴포넌트 (헤더)
-export function SearchIcon({ className = "w-6 h-6" }) {
+export function MenuIcon({ className = "w-6 h-6" }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      fill="none"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
+      fill="none"
       stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
+      <line x1="4" x2="20" y1="12" y2="12" />
+      <line x1="4" x2="20" y1="6" y2="6" />
+      <line x1="4" x2="20" y1="18" y2="18" />
     </svg>
   );
 }

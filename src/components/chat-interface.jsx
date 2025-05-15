@@ -10,56 +10,86 @@ import {
   ImageIcon,
   SendIcon,
 } from "@/components/icons";
+import { useChat } from "@/contexts/chat-context";
+import { TypingText } from "@/components/typing-text";
 
 // 채팅 인터페이스 컴포넌트
 export function ChatInterface() {
-  // 메시지 상태
-  const [messages, setMessages] = useState([]);
-  // 입력 상태
   const [input, setInput] = useState("");
-  // 메시지 끝 참조
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const { currentChatId, chatLogs, saveChatLog, startNewChat } = useChat();
 
-  // 메시지 끝으로 스크롤
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // 메시지 변경 시 스크롤
+  // 현재 채팅의 메시지 로드
   useEffect(() => {
-    scrollToBottom();
+    if (currentChatId) {
+      const currentChat = chatLogs.find((chat) => chat.id === currentChatId);
+      if (currentChat) {
+        setMessages(currentChat.messages);
+      } else {
+        setMessages([]);
+      }
+    }
+  }, [currentChatId, chatLogs]);
+
+  // 메시지 전송 시 자동 스크롤
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 메시지 전송 핸들러
-  const handleSendMessage = (e) => {
-    e.preventDefault();
+  // 메시지 전송
+  const handleSendMessage = () => {
     if (!input.trim()) return;
 
-    // 사용자 메시지 추가
-    const userMessage = {
-      id: Date.now().toString(),
+    // 현재 채팅이 없으면 새 채팅 시작
+    if (!currentChatId) {
+      startNewChat();
+    }
+
+    const newMessage = {
+      id: Date.now(),
       role: "user",
       content: input,
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
     };
 
-    // 메시지 배열에 사용자 메시지 추가
-    setMessages((prev) => [...prev, userMessage]);
-    // 입력 상태 초기화
+    const updatedMessages = [...messages, newMessage];
+    setMessages(updatedMessages);
     setInput("");
+    setIsLoading(true);
 
-    // 봇 응답 시뮬레이션
+    // 채팅 로그 저장
+    if (currentChatId) {
+      saveChatLog(currentChatId, updatedMessages);
+    }
+
+    // 봇 응답 추가
     setTimeout(() => {
-      // 봇 메시지 생성
       const botMessage = {
-        id: (Date.now() + 1).toString(),
+        id: Date.now() + 1,
         role: "assistant",
-        content: "안녕하세요! 오늘은 어떤 상품을 찾고 계신가요?",
-        timestamp: new Date(),
+        content: "안녕하세요. 무엇을 도와드릴까요?",
+        timestamp: new Date().toISOString(),
+        isTyping: true,
       };
-      // 메시지 배열에 봇 메시지 추가
-      setMessages((prev) => [...prev, botMessage]);
-    }, 1000);
+
+      const messagesWithBotResponse = [...updatedMessages, botMessage];
+      setMessages(messagesWithBotResponse);
+
+      // 봇 응답도 채팅 로그에 저장
+      if (currentChatId) {
+        saveChatLog(currentChatId, messagesWithBotResponse);
+      }
+    }, 500);
+  };
+
+  // Enter 키로 메시지 전송
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
   return (
@@ -122,10 +152,47 @@ export function ChatInterface() {
                       : "bg-white border border-gray-200"
                   }`}
                 >
-                  <p>{message.content}</p>
+                  {message.role === "assistant" && message.isTyping ? (
+                    <TypingText
+                      text={message.content}
+                      onComplete={() => {
+                        setMessages((prevMessages) =>
+                          prevMessages.map((msg) =>
+                            msg.id === message.id
+                              ? { ...msg, isTyping: false }
+                              : msg
+                          )
+                        );
+                        setIsLoading(false);
+                      }}
+                    />
+                  ) : (
+                    <p>{message.content}</p>
+                  )}
                 </div>
               </div>
             ))}
+            {/* 로딩 스피너 */}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="max-w-[80%] rounded-lg p-3 bg-white border border-gray-200">
+                  <div className="flex items-center space-x-2">
+                    <div
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* 메시지 끝 참조 */}
             <div ref={messagesEndRef} />
           </div>
@@ -134,7 +201,13 @@ export function ChatInterface() {
 
       {/* 입력 영역 */}
       <div className="p-4 border-t border-gray-200">
-        <form onSubmit={handleSendMessage} className="relative">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSendMessage();
+          }}
+          className="relative"
+        >
           {/* 입력 컨테이너 */}
           <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white">
             {/* 플러스 버튼 */}
@@ -182,6 +255,7 @@ export function ChatInterface() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
               placeholder="무엇이든 물어보세요"
               className="flex-1 border-0 focus:ring-0 focus:outline-none"
             />
