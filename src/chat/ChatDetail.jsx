@@ -18,6 +18,12 @@ export default function ChatDetail() {
         setIsLoading(true);
         setError(null);
 
+        // 해시값이 숫자인지 확인
+        if (!/^\d+$/.test(hash)) {
+          setError("잘못된 채팅 ID입니다.");
+          setIsLoading(false);
+          return;
+        }
         // 백엔드 API 호출
         const response = await fetch(`/api/chats/${hash}`);
         if (!response.ok) {
@@ -31,13 +37,6 @@ export default function ChatDetail() {
         setIsLoading(false);
       }
     };
-
-    // 해시값이 숫자인지 확인
-    if (!/^\d+$/.test(hash)) {
-      setError("잘못된 채팅 ID입니다.");
-      setIsLoading(false);
-      return;
-    }
 
     fetchChatHistory();
   }, [hash]);
