@@ -1,16 +1,16 @@
 import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./styles.css";
-import Home from "./app/page.jsx";
-import RootLayout from "./app/layout.jsx";
+import App from "./App";
 import Loading from "./app/loading.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RootLayout>
+    <Router>
       <Suspense fallback={<Loading />}>
-        <Home />
+        <App />
       </Suspense>
-    </RootLayout>
+    </Router>
   </StrictMode>
 );

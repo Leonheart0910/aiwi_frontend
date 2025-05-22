@@ -3,9 +3,111 @@ import {
   ShoppingCartIcon,
   ClockIcon,
   ExternalLinkIcon,
+  PlusIcon,
 } from "@/components/icons";
-import { useChat } from "@/contexts/chat-context";
+import { useChat } from "@/chat/chatContext";
+import { CartProvider } from "@/cart/cart-context";
+import { useCart } from "@/cart/cartContext";
 import recommendationBook from "@/assets/recommendation_book.png";
+import { useState } from "react";
+
+// 장바구니 생성 모달 컴포넌트
+function CreateCartModal({ isOpen, onClose, onCreate }) {
+  const [cartName, setCartName] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (cartName.trim()) {
+      onCreate(cartName.trim());
+      setCartName("");
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-96">
+        <h2 className="text-xl font-semibold mb-4">새 장바구니 만들기</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={cartName}
+            onChange={(e) => setCartName(e.target.value)}
+            placeholder="장바구니 이름을 입력하세요"
+            className="w-full p-2 border rounded-md mb-4"
+            autoFocus
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              만들기
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// 장바구니 섹션 컴포넌트
+function CartSection() {
+  const { carts, createCart } = useCart();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // 장바구니 생성
+  const handleCreateCart = async (name) => {
+    try {
+      await createCart(name);
+    } catch (error) {
+      console.error("장바구니 생성 실패:", error);
+    }
+  };
+
+  return (
+    <>
+      <div className="mt-4 px-3">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-xs font-medium text-gray-500 px-2">장바구니</h2>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="p-1 hover:bg-gray-100 rounded-md"
+          >
+            <PlusIcon className="h-4 w-4 text-gray-500" />
+          </button>
+        </div>
+        <div className="space-y-1">
+          {carts.map((cart) => (
+            <a
+              key={cart.id}
+              href="#"
+              className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
+            >
+              <FolderIcon className="h-4 w-4 text-gray-500" />
+              <span>{cart.name}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <CreateCartModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreate={handleCreateCart}
+      />
+    </>
+  );
+}
 
 // 사이드바 컴포넌트
 export function Sidebar() {
@@ -88,38 +190,10 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* 장바구니 */}
-      <div className="mt-4 px-3">
-        <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">
-          장바구니
-        </h2>
-        <div className="space-y-1">
-          {/* 패션 장바구니 */}
-          <a
-            href="#"
-            className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
-          >
-            <FolderIcon className="h-4 w-4 text-gray-500" />
-            <span>패션 장바구니</span>
-          </a>
-          {/* 식품 장바구니 */}
-          <a
-            href="#"
-            className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
-          >
-            <FolderIcon className="h-4 w-4 text-gray-500" />
-            <span>식품 장바구니</span>
-          </a>
-          {/* 가전 장바구니 */}
-          <a
-            href="#"
-            className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
-          >
-            <FolderIcon className="h-4 w-4 text-gray-500" />
-            <span>가전 장바구니</span>
-          </a>
-        </div>
-      </div>
+      {/* 장바구니 섹션 */}
+      <CartProvider>
+        <CartSection />
+      </CartProvider>
 
       {/* 채팅 로그 */}
       {Object.entries(groupedChats).map(([group, chats]) => (

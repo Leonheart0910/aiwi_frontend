@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Sidebar } from "@/components/sidebar";
-import { ChatInterface } from "@/components/chat-interface";
-import { UserMenu } from "@/components/user-menu";
+import { useNavigate } from "react-router-dom";
+import { Sidebar } from "./sidebar";
+import { ChatInterface } from "@/chat/chat-interface";
+import { UserMenu } from "./user-menu";
 import { Button } from "@/components/button";
-import { ChatProvider, useChat } from "@/contexts/chat-context";
+import { useChat } from "@/chat/chatContext";
 import {
   MenuIcon,
   PenIcon,
@@ -13,11 +14,16 @@ import {
 } from "@/components/icons";
 
 // Home 컴포넌트
-function HomeContent() {
-  // 사용자 메뉴
+export default function Home() {
+  // 네비게이션 이동
+  const navigate = useNavigate();
+  // 사용자 메뉴 열림 상태
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  // 사이드바 열림 상태
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // 사용자 메뉴 참조
   const userMenuRef = useRef(null);
+  // 새 채팅 시작
   const { startNewChat } = useChat();
 
   // 사용자 메뉴 외부 클릭 이벤트 처리
@@ -37,6 +43,15 @@ function HomeContent() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // 인증 체크
+  useEffect(() => {
+    // 개발 환경에서는 로그인 상태를 true로 설정
+    const isAuthenticated = import.meta.env.DEV ? true : false;
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   // 새 채팅 시작 핸들러
   const handleNewChat = () => {
@@ -114,14 +129,5 @@ function HomeContent() {
         <ChatInterface />
       </main>
     </div>
-  );
-}
-
-// 루트 컴포넌트
-export default function Home() {
-  return (
-    <ChatProvider>
-      <HomeContent />
-    </ChatProvider>
   );
 }

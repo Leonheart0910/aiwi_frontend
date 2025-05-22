@@ -10,7 +10,7 @@ import {
   ImageIcon,
   SendIcon,
 } from "@/components/icons";
-import { useChat } from "@/contexts/chat-context";
+import { useChat } from "@/chat/chatContext";
 import { TypingText } from "@/components/typing-text";
 
 // 채팅 인터페이스 컴포넌트
@@ -94,7 +94,7 @@ export function ChatInterface() {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {/* 채팅 메시지 */}
+      {/* 메시지 영역 */}
       <div className="flex-1 overflow-y-auto p-4">
         {/* 메시지가 없을 경우 */}
         {messages.length === 0 ? (
@@ -200,7 +200,7 @@ export function ChatInterface() {
       </div>
 
       {/* 입력 영역 */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="border-t border-gray-200 p-4">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -251,34 +251,33 @@ export function ChatInterface() {
             >
               <ImageIcon className="h-4 w-4" />
             </Button>
+            {/* 음성 버튼 */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="text-gray-500 h-8 w-8"
+            >
+              <MicIcon className="h-4 w-4" />
+            </Button>
             {/* 입력 필드 */}
-            <Input
+            <input
+              type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="무엇이든 물어보세요"
-              className="flex-1 border-0 focus:ring-0 focus:outline-none"
+              placeholder="메시지를 입력하세요"
+              className="flex-1 px-4 py-2 focus:outline-none"
             />
-            {/* 마이크 버튼 */}
-            <div className="flex items-center">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="text-gray-500 h-8 w-8"
-              >
-                <MicIcon className="h-4 w-4" />
-              </Button>
-              {/* 전송 버튼 */}
-              <Button
-                type="submit"
-                variant="ghost"
-                size="icon"
-                className="text-gray-500 h-8 w-8"
-              >
-                <SendIcon className="h-4 w-4" />
-              </Button>
-            </div>
+            {/* 전송 버튼 */}
+            <Button
+              type="submit"
+              variant="ghost"
+              size="icon"
+              className="text-gray-500 h-8 w-8"
+            >
+              <SendIcon className="h-4 w-4" />
+            </Button>
           </div>
         </form>
       </div>
