@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useChat } from "@/chat/chatContext";
 
+const base =
+  import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:3001" : "";
+
 // 채팅 상세 페이지
 export default function ChatDetail() {
   const { hash } = useParams();
@@ -18,14 +21,15 @@ export default function ChatDetail() {
         setIsLoading(true);
         setError(null);
 
-        // 해시값이 숫자인지 확인
-        if (!/^\d+$/.test(hash)) {
+        // 해시값이 UUID 형식인지 확인 (영문·숫자·하이픈 허용)
+        if (!/^[0-9A-Fa-f-]+$/.test(hash)) {
           setError("잘못된 채팅 ID입니다.");
           setIsLoading(false);
           return;
         }
+
         // 백엔드 API 호출
-        const response = await fetch(`/api/chats/${hash}`);
+        const response = await fetch(`${base}/chats/${hash}`);
         if (!response.ok) {
           throw new Error("채팅 내역을 불러오는데 실패했습니다.");
         }

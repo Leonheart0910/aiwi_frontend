@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 
+// mock 서버를 쓸 때는 포트 3001, 실제 API 쓰려면 빈 문자열
+const base =
+  import.meta.env.VITE_USE_MOCK === "true"
+    ? "http://localhost:3001"
+    : import.meta.env.REACT_APP_API_URL;
+
 export default function SignupPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,6 +20,7 @@ export default function SignupPage() {
   });
   const [error, setError] = useState("");
 
+  // 회원가입 폼 데이터 변경
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -22,12 +29,14 @@ export default function SignupPage() {
     }));
   };
 
+  // 회원가입 요청 /api/v1/user/signup
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch("/api/auth/signup", {
+      console.log(formData.age, formData.age.type);
+      const response = await fetch(`${base}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -144,7 +153,8 @@ export default function SignupPage() {
               className="w-full"
               onClick={() => navigate("/login")}
             >
-              이미 계정이 있으신가요? 로그인
+              <span className="mr-1">이미 계정이 있으신가요?</span>
+              <span className="text-blue-500">로그인</span>
             </Button>
           </div>
         </form>

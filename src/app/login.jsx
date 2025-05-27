@@ -1,5 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/button";
+import { Input } from "@/components/input";
+
+// mock 서버를 쓸 때는 포트 3001, 실제 API 쓰려면 빈 문자열
+const base =
+  import.meta.env.VITE_USE_MOCK === "true"
+    ? "http://localhost:3001"
+    : import.meta.env.REACT_APP_API_URL;
 
 // 로그인 폼 컴포넌트
 export default function LoginForm() {
@@ -8,7 +16,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 로그인 처리
+  // 로그인 처리 /api/v1/user/login
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -16,7 +24,7 @@ export default function LoginForm() {
     // 여기에 로그인 로직을 구현할 수 있습니다
     // 예: API 호출, 인증 등
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch(`${base}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,6 +35,10 @@ export default function LoginForm() {
       if (!response.ok) {
         throw new Error("로그인에 실패했습니다");
       }
+
+      // 로그인 성공 시 사용자 정보 저장
+      const user = await response.json();
+      localStorage.setItem("user_id", user.user_id);
 
       // 로그인 시뮬레이션 (실제 구현 시 이 부분을 수정하세요)
       setTimeout(() => {
@@ -50,40 +62,34 @@ export default function LoginForm() {
 
         <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
           <div className="space-y-2">
-            <input
+            <Input
               type="email"
               placeholder="이메일 주소"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full p-3 border rounded-md"
             />
           </div>
 
           <div className="space-y-2">
-            <input
+            <Input
               type="password"
               placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-3 border rounded-md"
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full p-3 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 transition-colors"
-          >
+          <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? "처리 중..." : "계속"}
-          </button>
+          </Button>
         </form>
 
         <div className="mt-4">
           <p>
             계정이 없으신가요?{" "}
-            <a href="/signup" className="text-emerald-500 hover:underline">
+            <a href="/signup" className="text-blue-500 hover:underline">
               회원 가입
             </a>
           </p>

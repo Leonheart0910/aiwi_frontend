@@ -39,12 +39,12 @@ export function ChatInterface() {
   }, [messages]);
 
   // 메시지 전송
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!input.trim()) return;
 
     // 현재 채팅이 없으면 새 채팅 시작
     if (!currentChatId) {
-      startNewChat();
+      await startNewChat();
     }
 
     const newMessage = {
