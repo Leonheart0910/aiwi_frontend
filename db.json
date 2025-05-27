@@ -1,0 +1,64 @@
+{
+  "input": [
+    {
+      "id": "406e",
+      "user_id": "undefined",
+      "hash": "6ccb2f74-17f0-4521-a312-b8c7329d7e5f"
+    }
+  ],
+  "messages": [
+    {
+      "id": "1",
+      "role": "user",
+      "content": "안녕하세요",
+      "timestamp": "2024-03-19T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "role": "assistant",
+      "content": "안녕하세요! 무엇을 도와드릴까요?",
+      "timestamp": "2024-03-19T00:00:01.000Z"
+    }
+  ],
+  "signup": [
+    {
+      "id": "3d3b",
+      "email": "a@a",
+      "password": "a",
+      "nickname": "a",
+      "age": 1,
+      "sex": "male"
+    }
+  ],
+  "login": [
+    {
+      "id": "b3be",
+      "email": "a@a",
+      "password": "a"
+    },
+    {
+      "id": "8fdd",
+      "email": "a@a",
+      "password": "a"
+    }
+  ],
+  "chats": [
+    {
+      "messages": [
+        {
+          "id": "1",
+          "role": "user",
+          "content": "안녕하세요",
+          "timestamp": "2024-03-19T00:00:00.000Z"
+        },
+        {
+          "id": "2",
+          "role": "assistant",
+          "content": "안녕하세요! 무엇을 도와드릴까요?",
+          "timestamp": "2024-03-19T00:00:01.000Z"
+        }
+      ],
+      "id": "6ccb2f74-17f0-4521-a312-b8c7329d7e5f"
+    }
+  ]
+}

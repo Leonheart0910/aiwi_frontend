@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Sidebar } from "./sidebar";
 import { ChatInterface } from "@/chat/chat-interface";
 import { UserMenu } from "./user-menu";
 import { Button } from "@/components/button";
 import { useChat } from "@/chat/chatContext";
+import { ChatProvider } from "@/chat/chat-context";
 import {
   MenuIcon,
   PenIcon,
@@ -23,8 +24,46 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   // 사용자 메뉴 참조
   const userMenuRef = useRef(null);
+
   // 새 채팅 시작
-  const { startNewChat } = useChat();
+  const { hash } = useParams();
+  const { currentChatId, chatLogs, startNewChat, loadChat, saveChatLog } =
+    useChat();
+  const [input, setInput] = useState("");
+  const messagesEndRef = useRef();
+  // URL 에 hash 가 있으면 loadChat
+  useEffect(() => {
+    if (hash) {
+      loadChat(hash);
+    }
+  }, [hash, loadChat]);
+
+  // 메시지 입력 후 처리
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    // 1) 아직 새 채팅이 없으면 만들고, hash 리턴
+    let chatId = currentChatId;
+    if (!chatId) {
+      chatId = await startNewChat();
+    }
+
+    // 2) (임시) AI 답변: 같은 답변 리턴
+    const userMsg = { from: "user", text: input.trim() };
+    const aiMsg = { from: "ai", text: "여기는 AI 답변이 표시됩니다." };
+
+    // 3) 로컬 상태에도 추가
+    saveChatLog(chatId, [
+      ...(chatLogs.find((c) => c.id === chatId)?.messages || []),
+      userMsg,
+      aiMsg,
+    ]);
+
+    setInput("");
+    // 스크롤
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // 사용자 메뉴 외부 클릭 이벤트 처리
   useEffect(() => {
@@ -54,11 +93,21 @@ export default function Home() {
   }, [navigate]);
 
   // 새 채팅 시작 핸들러
-  const handleNewChat = () => {
-    startNewChat();
-    setIsSidebarOpen(true); // 새 채팅 시작 시 사이드바 열기
+  const handleNewChat = async () => {
+    const current = chatLogs.find((c) => c.id === currentChatId);
+    if (current?.messages?.length === 0) return;
+
+    // 해시 생성 + 리다이렉트 (await!)
+    await startNewChat();
+    setIsSidebarOpen(true);
+    document
+      .getElementById("chat-logs-section")
+      ?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const current = chatLogs.find((c) => c.id === (hash || currentChatId)) || {
+    messages: [],
+  };
   return (
     <div className="flex h-screen bg-white">
       {/* 사이드바 */}
@@ -126,7 +175,13 @@ export default function Home() {
         </header>
 
         {/* 채팅 영역 */}
-        <ChatInterface />
+        <ChatInterface
+          messages={current.messages}
+          input={input}
+          onInput={setInput}
+          onSubmit={handleSubmit}
+          endRef={messagesEndRef}
+        />
       </main>
     </div>
   );

@@ -1,0 +1,5 @@
+{
+  "/input": "/chats",
+  "/chats/:hash": "/chats?hash=:hash",
+  "/api/chats": "/chats"
+}

@@ -9,7 +9,7 @@ import { useChat } from "@/chat/chatContext";
 import { CartProvider } from "@/cart/cart-context";
 import { useCart } from "@/cart/cartContext";
 import recommendationBook from "@/assets/recommendation_book.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // 장바구니 생성 모달 컴포넌트
 function CreateCartModal({ isOpen, onClose, onCreate }) {
@@ -111,7 +111,17 @@ function CartSection() {
 
 // 사이드바 컴포넌트
 export function Sidebar() {
-  const { chatLogs, loadChat, currentChatId } = useChat();
+  const { chatLogs, loadChat, currentChatId, loadChatLogs } = useChat();
+
+  // 컴포넌트 마운트 시 채팅 로그 불러오기
+  useEffect(() => {
+    loadChatLogs();
+  }, [loadChatLogs]);
+
+  // 디버깅을 위한 로그
+  useEffect(() => {
+    console.log("chatLogs:", chatLogs);
+  }, [chatLogs]);
 
   // 채팅 로그를 날짜별로 그룹화
   const groupedChats = chatLogs.reduce((groups, chat) => {
@@ -195,28 +205,30 @@ export function Sidebar() {
         <CartSection />
       </CartProvider>
 
-      {/* 채팅 로그 */}
-      {Object.entries(groupedChats).map(([group, chats]) => (
-        <div key={group} className="mt-4 px-3">
-          <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">
-            {group}
-          </h2>
-          <div className="space-y-1">
-            {chats.map((chat) => (
-              <button
-                key={chat.id}
-                onClick={() => loadChat(chat.id)}
-                className={`w-full flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm ${
-                  chat.id === currentChatId ? "bg-gray-100" : ""
-                }`}
-              >
-                <ClockIcon className="h-4 w-4 text-gray-500" />
-                <span className="truncate">{chat.title}</span>
-              </button>
-            ))}
+      {/* 채팅 로그 (스크롤 대상용 id 추가) */}
+      <div id="chat-logs-section">
+        {Object.entries(groupedChats).map(([group, chats]) => (
+          <div key={group} className="mt-4 px-3">
+            <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">
+              {group}
+            </h2>
+            <div className="space-y-1">
+              {chats.map((chat) => (
+                <button
+                  key={chat.id}
+                  onClick={() => loadChat(chat.id)}
+                  className={`w-full flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm ${
+                    chat.id === currentChatId ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <ClockIcon className="h-4 w-4 text-gray-500" />
+                  <span className="truncate">{chat.title}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </aside>
   );
 }
