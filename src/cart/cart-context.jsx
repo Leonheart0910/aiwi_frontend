@@ -28,28 +28,36 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // 새 장바구니 생성
+  // 새 장바구니 생성 /api/v1/collection/create
   const createCart = useCallback(async (name) => {
     try {
       setIsLoading(true);
       setError(null);
 
       // 백엔드에 장바구니 생성 요청
-      const response = await fetch("/api/carts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-      });
+      // const response = await fetch("/api/carts", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ name }),
+      // });
 
-      if (!response.ok) {
-        throw new Error("장바구니를 생성하는데 실패했습니다.");
-      }
+      // if (!response.ok) {
+      //   throw new Error("장바구니를 생성하는데 실패했습니다.");
+      // }
+      // const newCart = await response.json();
 
-      const newCart = await response.json();
+      const newCart = {
+        user_id: "유저 아이디",
+        collection_id: "장바구니 아이디",
+        collection_title: name,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
       setCarts((prev) => [...prev, newCart]);
-      setCurrentCartId(newCart.id);
+      setCurrentCartId(newCart.collection_id);
       return newCart;
     } catch (err) {
       setError(err.message);
@@ -59,19 +67,52 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // 장바구니 불러오기
-  const loadCart = useCallback(async (cartId) => {
+  // 장바구니 불러오기 /api/v1/collection/:collection_id
+  const loadCart = useCallback(async (collection_id) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/carts/${cartId}`);
-      if (!response.ok) {
-        throw new Error("장바구니를 불러오는데 실패했습니다.");
-      }
+      // const response = await fetch(`/api/v1/collections/${collection_id}`);
+      // if (!response.ok) {
+      //   throw new Error("장바구니를 불러오는데 실패했습니다.");
+      // }
+      // const cart = await response.json();
 
-      const cart = await response.json();
-      setCurrentCartId(cartId);
+      const cart = {
+        collection_id: 1,
+        collection_title: "여름 세일 장바구니",
+        user_id: 1,
+        created_at: "2025-05-28T12:45:00",
+        items: [
+          {
+            item_id: 101,
+            product_name: "반팔티",
+            product_info: "면 100%, 흰색",
+            category_name: "상의",
+            created_at: "2025-05-28T12:46:00",
+            image: {
+              image_id: 301,
+              image_url: "https://example.com/images/301.jpg",
+              created_at: "2025-05-28T12:46:00",
+            },
+          },
+          {
+            item_id: 102,
+            product_name: "청바지",
+            product_info: "스키니핏, 블루",
+            category_name: "하의",
+            created_at: "2025-05-28T12:47:00",
+            image: {
+              image_id: 302,
+              image_url: "https://example.com/images/302.jpg",
+              created_at: "2025-05-28T12:47:00",
+            },
+          },
+        ],
+      };
+
+      setCurrentCartId(collection_id);
       return cart;
     } catch (err) {
       setError(err.message);
@@ -113,24 +154,29 @@ export function CartProvider({ children }) {
   }, []);
 
   // 장바구니에서 상품 제거
-  const removeFromCart = useCallback(async (cartId, itemId) => {
+  const removeFromCart = useCallback(async (collectionId, itemId) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/carts/${cartId}/items/${itemId}`, {
-        method: "DELETE",
-      });
+      console.log(collectionId, itemId);
+      // const response = await fetch(
+      //   `/api/v1/collection/${collectionId}/${itemId}`,
+      //   {
+      //     method: "DELETE",
+      //   }
+      // );
+      // if (!response.ok) {
+      //   throw new Error("상품 제거 실패");
+      // }
+      // 성공 시 로컬 상태 갱신 (loadCart로 재로드 또는 수동 제거)
+      // const updated = await response.json();
 
-      if (!response.ok) {
-        throw new Error("상품을 장바구니에서 제거하는데 실패했습니다.");
-      }
+      const updated = {
+        message: "장바구니 삭제되었습니다.",
+      };
 
-      const updatedCart = await response.json();
-      setCarts((prev) =>
-        prev.map((cart) => (cart.id === cartId ? updatedCart : cart))
-      );
-      return updatedCart;
+      return updated;
     } catch (err) {
       setError(err.message);
       throw err;

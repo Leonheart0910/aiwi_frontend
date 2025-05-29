@@ -9,7 +9,6 @@ import {
   PlusIcon,
 } from "@/components/icons";
 import { useChat } from "@/chat/chatContext";
-import { CartProvider } from "@/cart/cart-context";
 import { CartSection } from "@/cart/CartSection";
 import recommendationBook from "@/assets/recommendation_book.png";
 
@@ -105,10 +104,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* 장바구니 섹션 */}
-      <CartProvider>
-        <CartSection />
-      </CartProvider>
+      <CartSection />
 
       {/* 채팅 로그 (스크롤 대상용 id 추가) */}
       <div id="chat-logs-section">

@@ -13,48 +13,61 @@ export function ChatProvider({ children, onNavigate }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 새 채팅 시작 /api/v1/input
-  const startNewChat = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  // ✅ 새 채팅 시작 /api/v1/input
+  const startNewChat = useCallback(
+    async ({ query, shouldNavigate = true } = {}) => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // 1) 해시값 생성
-      const userId = localStorage.getItem("user_id");
-      const hash = uuidv4();
+        // 1) 해시값 생성
+        const userId = localStorage.getItem("user_id");
+        const hash = uuidv4();
+        console.log(query, userId, hash);
 
-      // 2) 백엔드에 새 채팅 생성 POST 요청
-      // const response = await fetch(`${base}/input`, {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ user_id: userId, hash, id: hash }),
-      // });
-      // if (!response.ok) throw new Error("새 채팅 생성 실패");
-      // const newChat = await response.json();
+        // 2) 백엔드에 새 채팅 생성 POST 요청
+        // const response = await fetch(`${base}/input`, {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({ user_id: userId, hash, id: hash }),
+        // });
+        // if (!response.ok) throw new Error("새 채팅 생성 실패");
+        // const newChat = await response.json();
 
-      const newChat = {
-        chat_id: hash,
-        user_id: userId,
-        title: "채팅 제목",
-        messages: [],
-      };
-      console.log(newChat);
+        const newChat = {
+          chat_id: hash,
+          user_id: userId,
+          status: "ok",
+          final_result: [
+            {
+              type: "text",
+              text: "안녕하세요. 채팅을 시작합니다.",
+            },
+          ],
+          title: "채팅 제목",
+        };
+        console.log(newChat);
 
-      // 3) 상태 업데이트 & 리다이렉트
-      setCurrentChatId(hash);
-      setChatLogs((prev) => [newChat, ...prev]);
+        // 3) 상태 업데이트 & 리다이렉트
+        setCurrentChatId(hash);
+        setChatLogs((prev) => [newChat, ...prev]);
 
-      onNavigate(`/chat/${hash}`);
-      setIsLoading(false);
-      return hash;
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [onNavigate /*, uuidv4, base */]);
+        if (shouldNavigate && onNavigate) {
+          onNavigate(`/chat/${hash}`);
+        }
 
-  // 해당 채팅 로그 저장 /api/v1/chats/:id
+        setIsLoading(false);
+        return hash;
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onNavigate /*, uuidv4, base */]
+  );
+
+  // ✅ 해당 채팅 로그 저장 /api/v1/chats/:id
   const saveChatLog = useCallback(async (chatId, messages) => {
     try {
       setIsLoading(true);
@@ -89,7 +102,7 @@ export function ChatProvider({ children, onNavigate }) {
     }
   }, []);
 
-  // 사용자의 특정 채팅 불러오기 (로그인 이후)
+  // ✅ 사용자의 특정 채팅 불러오기 (로그인 이후)
   const loadAllChats = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -103,7 +116,7 @@ export function ChatProvider({ children, onNavigate }) {
     return all;
   }, []);
 
-  // 해당 채팅 로그 불러오기 /api/v1/chats/:id
+  // ✅ 해당 채팅 로그 불러오기 /api/v1/chats/:id
   const loadChat = useCallback(async (hash) => {
     setIsLoading(true);
     setError(null);
@@ -160,13 +173,13 @@ export function ChatProvider({ children, onNavigate }) {
     return chat;
   }, []);
 
-  // 채팅 로그 초기화
+  // ✅ 채팅 로그 초기화
   const clearChat = useCallback(() => {
     setChatLogs([]);
     setCurrentChatId(null);
   }, []);
 
-  // 채팅 목록 불러오기
+  // ✅ 채팅 목록 불러오기
   const loadChatLogs = useCallback(async () => {
     try {
       setIsLoading(true);

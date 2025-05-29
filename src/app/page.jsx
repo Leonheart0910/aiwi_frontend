@@ -5,7 +5,6 @@ import { ChatInterface } from "@/chat/chat-interface";
 import { UserMenu } from "./user-menu";
 import { Button } from "@/components/button";
 import { useChat } from "@/chat/chatContext";
-import { ChatProvider } from "@/chat/chat-context";
 import {
   MenuIcon,
   PenIcon,
@@ -30,14 +29,14 @@ export default function Home() {
   const { chatLogs, loadChat, startNewChat } = useChat();
   const messagesEndRef = useRef();
 
-  // URL 에 hash 가 있으면 loadChat
+  // ✅ URL 에 hash가 있으면 loadChat
   useEffect(() => {
     if (hash) {
       loadChat(hash);
     }
   }, [hash, loadChat]);
 
-  // 사용자 메뉴 외부 클릭 이벤트 처리
+  // ✅ 사용자 메뉴 외부 클릭 이벤트 처리
   useEffect(() => {
     // 브라우저 어디를 클릭하든 호출되는 핸들러
     // 클릭한 곳이 userMenu 내부인지 확인하고 외부를 클릭했을 경우 메뉴 닫기
@@ -55,7 +54,7 @@ export default function Home() {
     };
   }, []);
 
-  // 인증 체크
+  // ✅ 인증 체크
   useEffect(() => {
     // 개발 환경에서는 로그인 상태를 true로 설정
     const isAuthenticated = import.meta.env.DEV ? true : false;
@@ -64,14 +63,12 @@ export default function Home() {
     }
   }, [navigate]);
 
-  // PenIcon 클릭 핸들러: 메시지가 있으면 새 채팅 시작
+  // ✅ PenIcon 클릭 핸들러: 메시지가 있으면 새 채팅 시작
   const handlePenClick = async () => {
-    const current = chatLogs.find((c) => c.chat_id === hash);
-    const hasMessages = current?.messages?.length > 0;
-    // console.log(hash);
-    if (hasMessages) {
-      await startNewChat(); // 내부에서 navigate 수행
+    if (chatLogs.length > 0) {
+      await startNewChat({ shouldNavigate: false });
     }
+    navigate("/"); // 수동으로 홈으로만 이동
   };
 
   return (

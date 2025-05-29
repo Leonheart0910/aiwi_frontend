@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useCart } from "@/cart/cartContext";
 import { PlusIcon, FolderIcon } from "@/components/icons";
 import { CreateCartModal } from "./CreateCartModal";
+import { useNavigate } from "react-router-dom";
 
 export function CartSection() {
+  const navigate = useNavigate();
   const { carts, createCart } = useCart();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -29,14 +31,14 @@ export function CartSection() {
         </div>
         <div className="space-y-1">
           {carts.map((cart) => (
-            <a
-              key={cart.id}
-              href="#"
-              className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
+            <button
+              key={cart.collection_id}
+              onClick={() => navigate(`/cart/${cart.collection_id}`)}
+              className="w-full flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
             >
               <FolderIcon className="h-4 w-4 text-gray-500" />
-              <span>{cart.name}</span>
-            </a>
+              <span>{cart.collection_title}</span>
+            </button>
           ))}
         </div>
       </div>

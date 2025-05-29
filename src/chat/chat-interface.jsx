@@ -18,21 +18,20 @@ import { TypingText } from "@/components/typing-text";
 export function ChatInterface({ endRef }) {
   const { chatId } = useParams(); // URL에서 :chatId 추출
   const [input, setInput] = useState(""); // 입력 상태
-  const [messages, setMessages] = useState([]); // 메시지 상태
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태
   const messagesEndRef = useRef(null); // 메시지 끝 참조
   // 현재 채팅 hash 값, 채팅 목록 리스트, 채팅 로딩 함수, 채팅 로그 저장 함수, 새 채팅 시작 함수
   const { currentChatId, chatLogs, loadChat, saveChatLog, startNewChat } =
     useChat();
 
-  // chatId 기반 loadChat 실행
+  // ✅ chatId 기반 loadChat 실행
   useEffect(() => {
     if (chatId && chatId !== currentChatId) {
       loadChat(chatId);
     }
   }, [chatId, currentChatId, loadChat]);
 
-  // 현재 채팅의 메시지 로드, currentChatId가 바뀔 때 메시지 불러오기
+  // ✅ 현재 채팅의 메시지 로드, currentChatId가 바뀔 때 메시지 불러오기
   useEffect(() => {
     if (currentChatId) {
       const currentChat = chatLogs.find(
@@ -46,19 +45,19 @@ export function ChatInterface({ endRef }) {
     }
   }, [currentChatId, chatLogs]);
 
-  // 메시지 전송 시 자동 스크롤
+  // ✅ 메시지 전송 시 자동 스크롤
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 현재 채팅이 없으면 메시지 목록 초기화
+  // ✅ 현재 채팅이 없으면 메시지 목록 초기화
   useEffect(() => {
     if (!currentChatId) {
       setMessages([]);
     }
   }, [currentChatId]);
 
-  // 메시지 전송
+  // ✅ 메시지 전송
   const handleSendMessage = async () => {
     // 메시지가 없으면 리턴
     if (!input.trim()) return;
@@ -108,7 +107,7 @@ export function ChatInterface({ endRef }) {
     }, 500);
   };
 
-  // Enter 키로 메시지 전송
+  // ✅ Enter 키로 메시지 전송
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
