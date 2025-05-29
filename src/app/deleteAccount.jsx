@@ -1,7 +1,42 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function LogoutPage() {
   const navigate = useNavigate();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleWithdraw = async () => {
+    const userId = localStorage.getItem("user_id");
+    if (!userId) {
+      alert("로그인 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+
+      // const response = await fetch(`${base}/api/v1/user/withdraw`, {
+      //   method: "DELETE",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ user_id: userId }),
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error("회원 탈퇴 실패");
+      // }
+
+      alert("탈퇴가 완료되었습니다.");
+      localStorage.removeItem("user_id");
+      navigate("/login");
+    } catch (err) {
+      console.error("탈퇴 오류:", err);
+      alert("탈퇴 중 문제가 발생했습니다.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
@@ -13,10 +48,18 @@ export default function LogoutPage() {
             href="https://www.notion.so"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-emerald-500 hover:underline block"
+            className="text-blue-500 hover:underline block"
           >
             탈퇴약관
           </a>
+
+          <button
+            onClick={handleWithdraw}
+            disabled={isDeleting}
+            className="w-full p-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+          >
+            {isDeleting ? "처리 중..." : "회원 탈퇴"}
+          </button>
 
           <button
             onClick={() => navigate("/")}

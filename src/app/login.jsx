@@ -3,12 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 
-// mock 서버를 쓸 때는 포트 3001, 실제 API 쓰려면 빈 문자열
-const base =
-  import.meta.env.VITE_USE_MOCK === "true"
-    ? "http://localhost:3001"
-    : import.meta.env.REACT_APP_API_URL;
-
 // 로그인 폼 컴포넌트
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -21,30 +15,25 @@ export default function LoginForm() {
     e.preventDefault();
     setIsLoading(true);
 
-    // 여기에 로그인 로직을 구현할 수 있습니다
-    // 예: API 호출, 인증 등
     try {
-      const response = await fetch(`${base}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // const response = await fetch(`${base}/login`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ email, password }),
+      // });
 
-      if (!response.ok) {
-        throw new Error("로그인에 실패했습니다");
-      }
+      // if (!response.ok) {
+      //   throw new Error("로그인에 실패했습니다");
+      // }
 
-      // 로그인 성공 시 사용자 정보 저장
-      const user = await response.json();
-      localStorage.setItem("user_id", user.user_id);
+      // 로그인 성공 시 사용자 정보 저장 원래는 GET 요청해야 함
+      const user_id = "a";
+      localStorage.setItem("user_id", user_id);
 
-      // 로그인 시뮬레이션 (실제 구현 시 이 부분을 수정하세요)
-      setTimeout(() => {
-        setIsLoading(false);
-        navigate("/"); // 로그인 성공 후 리다이렉션
-      }, 1500);
+      setIsLoading(false);
+      navigate("/"); // 로그인 성공 후 홈으로 이동
     } catch (error) {
       console.error("로그인 오류:", error);
       setIsLoading(false);

@@ -27,43 +27,15 @@ export default function Home() {
 
   // 새 채팅 시작
   const { hash } = useParams();
-  const { currentChatId, chatLogs, startNewChat, loadChat, saveChatLog } =
-    useChat();
-  const [input, setInput] = useState("");
+  const { chatLogs, loadChat, startNewChat } = useChat();
   const messagesEndRef = useRef();
+
   // URL 에 hash 가 있으면 loadChat
   useEffect(() => {
     if (hash) {
       loadChat(hash);
     }
   }, [hash, loadChat]);
-
-  // 메시지 입력 후 처리
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    // 1) 아직 새 채팅이 없으면 만들고, hash 리턴
-    let chatId = currentChatId;
-    if (!chatId) {
-      chatId = await startNewChat();
-    }
-
-    // 2) (임시) AI 답변: 같은 답변 리턴
-    const userMsg = { from: "user", text: input.trim() };
-    const aiMsg = { from: "ai", text: "여기는 AI 답변이 표시됩니다." };
-
-    // 3) 로컬 상태에도 추가
-    saveChatLog(chatId, [
-      ...(chatLogs.find((c) => c.id === chatId)?.messages || []),
-      userMsg,
-      aiMsg,
-    ]);
-
-    setInput("");
-    // 스크롤
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   // 사용자 메뉴 외부 클릭 이벤트 처리
   useEffect(() => {
@@ -92,29 +64,23 @@ export default function Home() {
     }
   }, [navigate]);
 
-  // 새 채팅 시작 핸들러
-  const handleNewChat = async () => {
-    const current = chatLogs.find((c) => c.id === currentChatId);
-    if (current?.messages?.length === 0) return;
-
-    // 해시 생성 + 리다이렉트 (await!)
-    await startNewChat();
-    setIsSidebarOpen(true);
-    document
-      .getElementById("chat-logs-section")
-      ?.scrollIntoView({ behavior: "smooth" });
+  // PenIcon 클릭 핸들러: 메시지가 있으면 새 채팅 시작
+  const handlePenClick = async () => {
+    const current = chatLogs.find((c) => c.chat_id === hash);
+    const hasMessages = current?.messages?.length > 0;
+    // console.log(hash);
+    if (hasMessages) {
+      await startNewChat(); // 내부에서 navigate 수행
+    }
   };
 
-  const current = chatLogs.find((c) => c.id === (hash || currentChatId)) || {
-    messages: [],
-  };
   return (
     <div className="flex h-screen bg-white">
       {/* 사이드바 */}
       <div
         className={`${
           isSidebarOpen ? "w-64" : "w-0"
-        } transition-all duration-300 ease-in-out overflow-hidden`}
+        } transition-all duration-300 ease-in-out overflow-hidden border-r border-gray-200`}
       >
         <div className="w-64">
           <Sidebar />
@@ -138,7 +104,7 @@ export default function Home() {
               variant="ghost"
               size="icon"
               className="text-gray-500"
-              onClick={handleNewChat}
+              onClick={handlePenClick}
             >
               <PenIcon className="h-5 w-5" />
             </Button>
@@ -175,13 +141,7 @@ export default function Home() {
         </header>
 
         {/* 채팅 영역 */}
-        <ChatInterface
-          messages={current.messages}
-          input={input}
-          onInput={setInput}
-          onSubmit={handleSubmit}
-          endRef={messagesEndRef}
-        />
+        <ChatInterface endRef={messagesEndRef} />
       </main>
     </div>
   );

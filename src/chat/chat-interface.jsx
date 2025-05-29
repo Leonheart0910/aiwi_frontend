@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
@@ -14,17 +15,29 @@ import { useChat } from "@/chat/chatContext";
 import { TypingText } from "@/components/typing-text";
 
 // 채팅 인터페이스 컴포넌트
-export function ChatInterface() {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-  const { currentChatId, chatLogs, saveChatLog, startNewChat } = useChat();
+export function ChatInterface({ endRef }) {
+  const { chatId } = useParams(); // URL에서 :chatId 추출
+  const [input, setInput] = useState(""); // 입력 상태
+  const [messages, setMessages] = useState([]); // 메시지 상태
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const messagesEndRef = useRef(null); // 메시지 끝 참조
+  // 현재 채팅 hash 값, 채팅 목록 리스트, 채팅 로딩 함수, 채팅 로그 저장 함수, 새 채팅 시작 함수
+  const { currentChatId, chatLogs, loadChat, saveChatLog, startNewChat } =
+    useChat();
 
-  // 현재 채팅의 메시지 로드
+  // chatId 기반 loadChat 실행
+  useEffect(() => {
+    if (chatId && chatId !== currentChatId) {
+      loadChat(chatId);
+    }
+  }, [chatId, currentChatId, loadChat]);
+
+  // 현재 채팅의 메시지 로드, currentChatId가 바뀔 때 메시지 불러오기
   useEffect(() => {
     if (currentChatId) {
-      const currentChat = chatLogs.find((chat) => chat.id === currentChatId);
+      const currentChat = chatLogs.find(
+        (chat) => chat.chat_id === currentChatId
+      );
       if (currentChat) {
         setMessages(currentChat.messages);
       } else {
@@ -38,15 +51,25 @@ export function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // 현재 채팅이 없으면 메시지 목록 초기화
+  useEffect(() => {
+    if (!currentChatId) {
+      setMessages([]);
+    }
+  }, [currentChatId]);
+
   // 메시지 전송
   const handleSendMessage = async () => {
+    // 메시지가 없으면 리턴
     if (!input.trim()) return;
 
     // 현재 채팅이 없으면 새 채팅 시작
-    if (!currentChatId) {
-      await startNewChat();
+    let chatId = currentChatId;
+    if (!chatId) {
+      chatId = await startNewChat();
     }
 
+    // 새 메시지 생성
     const newMessage = {
       id: Date.now(),
       role: "user",
@@ -54,17 +77,18 @@ export function ChatInterface() {
       timestamp: new Date().toISOString(),
     };
 
+    // 메시지 목록에 추가
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
 
     // 채팅 로그 저장
-    if (currentChatId) {
-      saveChatLog(currentChatId, updatedMessages);
+    if (chatId) {
+      saveChatLog(chatId, updatedMessages);
     }
 
-    // 봇 응답 추가
+    // 봇 응답 추가 추후 백엔드 연동 시 수정
     setTimeout(() => {
       const botMessage = {
         id: Date.now() + 1,
@@ -78,8 +102,8 @@ export function ChatInterface() {
       setMessages(messagesWithBotResponse);
 
       // 봇 응답도 채팅 로그에 저장
-      if (currentChatId) {
-        saveChatLog(currentChatId, messagesWithBotResponse);
+      if (chatId) {
+        saveChatLog(chatId, messagesWithBotResponse);
       }
     }, 500);
   };
@@ -100,31 +124,27 @@ export function ChatInterface() {
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center">
             <h2 className="text-2xl font-semibold mb-6">
-              오늘은 무슨 쇼핑을 하고 계신가요?
+              오늘은 어떤 상품을 찾고 계신가요?
             </h2>
             <div className="grid grid-cols-2 gap-2 max-w-md">
-              {/* 패션 상품 추천 버튼 */}
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center"
               >
                 <span className="text-sm font-medium">패션 상품 추천</span>
               </Button>
-              {/* 가전 제품 찾기 버튼 */}
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center"
               >
                 <span className="text-sm font-medium">가전 제품 찾기</span>
               </Button>
-              {/* 식품 장바구니 버튼 */}
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center"
               >
                 <span className="text-sm font-medium">식품 장바구니</span>
               </Button>
-              {/* 할인 상품 보기 버튼 */}
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center"
@@ -194,7 +214,7 @@ export function ChatInterface() {
               </div>
             )}
             {/* 메시지 끝 참조 */}
-            <div ref={messagesEndRef} />
+            <div ref={endRef ?? messagesEndRef} />
           </div>
         )}
       </div>
@@ -261,7 +281,7 @@ export function ChatInterface() {
               <MicIcon className="h-4 w-4" />
             </Button>
             {/* 입력 필드 */}
-            <input
+            <Input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
