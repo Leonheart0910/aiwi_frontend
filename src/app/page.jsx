@@ -20,7 +20,7 @@ export default function Home() {
   // 사용자 메뉴 열림 상태
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   // 사이드바 열림 상태
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // 사용자 메뉴 참조
   const userMenuRef = useRef(null);
 

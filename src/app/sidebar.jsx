@@ -12,43 +12,61 @@ import { useChat } from "@/chat/chatContext";
 import { CartSection } from "@/cart/CartSection";
 import recommendationBook from "@/assets/recommendation_book.png";
 
-// 사이드바 컴포넌트
 export function Sidebar() {
-  const { chatLogs, loadChat, currentChatId, loadChatLogs } = useChat();
+  const { chatLogs, loadChat, currentChatId, loadChatLogs, messages } =
+    useChat();
   const navigate = useNavigate();
 
-  // 컴포넌트 마운트 시 채팅 로그 불러오기
+  // ✅ 컴포넌트 마운트 시 채팅 로그 불러오기
   useEffect(() => {
     loadChatLogs();
   }, [loadChatLogs]);
 
-  // 디버깅을 위한 로그
+  // ✅ 디버깅을 위한 로그
   useEffect(() => {
-    console.log("chatLogs:", chatLogs);
-  }, [chatLogs]);
+    console.log("chatLogs: ", chatLogs);
+    console.log("currentChatId: ", currentChatId);
+    console.log("messages: ", messages);
+  }, [chatLogs, currentChatId, messages]);
 
-  // 채팅 로그를 날짜별로 그룹화
+  // ✅ 채팅 로그를 날짜별로 그룹화
   const groupedChats = chatLogs.reduce((groups, chat) => {
-    const date = new Date(chat.timestamp);
+    const date = new Date(chat.updated_at);
+
+    if (isNaN(date.getTime())) {
+      console.warn("유효하지 않은 날짜:", chat.updated_at);
+      return groups;
+    }
+
     const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const isSameDay = (d1, d2) =>
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
 
     let group;
-    if (date.toDateString() === today.toDateString()) {
+    if (isSameDay(date, today)) {
       group = "오늘";
-    } else if (date.toDateString() === yesterday.toDateString()) {
+    } else if (isSameDay(date, yesterday)) {
       group = "어제";
     } else {
       group = "이전 기록";
     }
 
-    if (!groups[group]) {
-      groups[group] = [];
-    }
+    if (!groups[group]) groups[group] = [];
     groups[group].push(chat);
+
     return groups;
   }, {});
+
+  // ✅ 채팅 로그 클릭 시 채팅 로드
+  const handleChatClick = (chatId) => {
+    loadChat(chatId);
+    navigate(`/chat/${chatId}`);
+  };
 
   return (
     <aside className="w-64 flex flex-col h-full bg-white">
@@ -117,10 +135,7 @@ export function Sidebar() {
               {chats.map((chat) => (
                 <button
                   key={chat.chat_id}
-                  onClick={() => {
-                    loadChat(chat.chat_id);
-                    navigate(`/chat/${chat.chat_id}`);
-                  }}
+                  onClick={() => handleChatClick(chat.chat_id)}
                   className={`w-full flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm ${
                     chat.chat_id === currentChatId ? "bg-gray-100" : ""
                   }`}

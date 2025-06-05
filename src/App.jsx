@@ -1,4 +1,6 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { useCallback } from "react";
+
 import { ChatProvider } from "@/chat/chat-context";
 import { CartProvider } from "@/cart/cart-context";
 import Home from "@/app/page";
@@ -9,10 +11,16 @@ import CartDetail from "@/cart/CartDetail";
 
 export default function App() {
   const navigate = useNavigate();
+  const onNavigate = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
 
   return (
-    <CartProvider onNavigate={navigate}>
-      <ChatProvider>
+    <CartProvider onNavigate={onNavigate}>
+      <ChatProvider onNavigate={onNavigate}>
         <Routes>
           {/* 로그인 페이지 */}
           <Route path="/login" element={<Login />} />
@@ -25,7 +33,10 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="" element={<Home />} />
           {/* 장바구니 페이지 */}
-          <Route path="/cart/:collection_id" element={<CartDetail />} />
+          <Route
+            path="/cart/:collection_id"
+            element={<CartDetail onNavigate={onNavigate} />}
+          />
         </Routes>
       </ChatProvider>
     </CartProvider>

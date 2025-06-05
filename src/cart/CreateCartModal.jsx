@@ -3,6 +3,7 @@ import { useState } from "react";
 export function CreateCartModal({ isOpen, onClose, onCreate }) {
   const [cartName, setCartName] = useState("");
 
+  // ✅ 장바구니 생성
   const handleSubmit = (e) => {
     e.preventDefault();
     if (cartName.trim()) {

@@ -1,25 +1,35 @@
 import { useState, useCallback, useEffect } from "react";
 import { CartContext } from "./cartContext";
 
-// 장바구니 컨텍스트 프로바이더
 export function CartProvider({ children }) {
   const [carts, setCarts] = useState([]);
   const [currentCartId, setCurrentCartId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 장바구니 목록 불러오기
+  // ✅ 장바구니 목록 불러오기
   const loadCarts = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch("/api/carts");
-      if (!response.ok) {
-        throw new Error("장바구니 목록을 불러오는데 실패했습니다.");
-      }
+      // const response = await fetch("/api/v1/collection");
+      // if (!response.ok) {
+      //   throw new Error("장바구니 목록을 불러오는데 실패했습니다.");
+      // }
+      // const data = await response.json();
 
-      const data = await response.json();
+      const data = [
+        {
+          collection_id: 1,
+          collection_title: "여름 세일 장바구니",
+        },
+        {
+          collection_id: 2,
+          collection_title: "겨울 세일 장바구니",
+        },
+      ];
+
       setCarts(data);
     } catch (err) {
       setError(err.message);
@@ -28,7 +38,7 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // 새 장바구니 생성 /api/v1/collection/create
+  // ✅ 새 장바구니 생성 /api/v1/collection/create
   const createCart = useCallback(async (name) => {
     try {
       setIsLoading(true);
@@ -46,19 +56,20 @@ export function CartProvider({ children }) {
       // if (!response.ok) {
       //   throw new Error("장바구니를 생성하는데 실패했습니다.");
       // }
-      // const newCart = await response.json();
+      // const response = await response.json();
 
-      const newCart = {
+      const response = {
         user_id: "유저 아이디",
         collection_id: "장바구니 아이디",
         collection_title: name,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
-
+      const newCart = {
+        collection_id: response.collection_id,
+        collection_title: response.collection_title,
+      };
       setCarts((prev) => [...prev, newCart]);
-      setCurrentCartId(newCart.collection_id);
-      return newCart;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -67,11 +78,17 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // 장바구니 불러오기 /api/v1/collection/:collection_id
+  // ✅ 컴포넌트 마운트 시 장바구니 목록 로드
+  useEffect(() => {
+    loadCarts();
+  }, [loadCarts]);
+
+  // ✅ 장바구니 불러오기 /api/v1/collection/:collection_id
   const loadCart = useCallback(async (collection_id) => {
     try {
       setIsLoading(true);
       setError(null);
+      setCurrentCartId(collection_id);
 
       // const response = await fetch(`/api/v1/collections/${collection_id}`);
       // if (!response.ok) {
@@ -112,7 +129,6 @@ export function CartProvider({ children }) {
         ],
       };
 
-      setCurrentCartId(collection_id);
       return cart;
     } catch (err) {
       setError(err.message);
@@ -122,29 +138,22 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // 장바구니에 상품 추가
+  // ✅ 장바구니에 상품 추가
   const addToCart = useCallback(async (cartId, product) => {
     try {
       setIsLoading(true);
       setError(null);
-
-      const response = await fetch(`/api/carts/${cartId}/items`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(product),
-      });
-
-      if (!response.ok) {
-        throw new Error("상품을 장바구니에 추가하는데 실패했습니다.");
-      }
-
-      const updatedCart = await response.json();
-      setCarts((prev) =>
-        prev.map((cart) => (cart.id === cartId ? updatedCart : cart))
-      );
-      return updatedCart;
+      console.log(cartId, product);
+      // const response = await fetch(`/api/v1/item/register`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(product),
+      // });
+      // if (!response.ok) {
+      //   throw new Error("상품을 장바구니에 추가하는데 실패했습니다.");
+      // }
     } catch (err) {
       setError(err.message);
       throw err;
@@ -153,7 +162,7 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // 장바구니에서 상품 제거
+  // ✅ 장바구니에서 상품 제거
   const removeFromCart = useCallback(async (collectionId, itemId) => {
     try {
       setIsLoading(true);
@@ -185,7 +194,7 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // 장바구니 삭제
+  // ✅ 장바구니 삭제
   const deleteCart = useCallback(
     async (cartId) => {
       try {
@@ -213,11 +222,6 @@ export function CartProvider({ children }) {
     },
     [currentCartId]
   );
-
-  // 컴포넌트 마운트 시 장바구니 목록 로드
-  useEffect(() => {
-    loadCarts();
-  }, [loadCarts]);
 
   return (
     <CartContext.Provider

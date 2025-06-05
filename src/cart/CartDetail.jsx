@@ -3,15 +3,14 @@ import { useParams } from "react-router-dom";
 import { useCart } from "@/cart/cartContext";
 import { Button } from "@/components/button";
 import { FolderIcon } from "@/components/icons";
-import { useNavigate } from "react-router-dom";
 
-export default function CartDetail() {
-  const navigate = useNavigate();
+export default function CartDetail({ onNavigate }) {
   const { collection_id } = useParams();
   const { loadCart, removeFromCart } = useCart();
   const [cart, setCart] = useState(null);
   const [error, setError] = useState(null);
 
+  // ✅ 장바구니 불러오기
   const fetchCart = useCallback(async () => {
     try {
       const result = await loadCart(collection_id);
@@ -21,10 +20,12 @@ export default function CartDetail() {
     }
   }, [collection_id, loadCart]);
 
+  // ✅ 장바구니 불러오기
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
 
+  // ✅ 장바구니에서 상품 제거
   const handleRemove = async (itemId) => {
     try {
       await removeFromCart(collection_id, itemId);
@@ -58,7 +59,7 @@ export default function CartDetail() {
           <FolderIcon className="w-6 h-6 text-gray-500" />
           <h1 className="text-xl font-semibold">{cart.collection_title}</h1>
         </div>
-        <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+        <Button variant="outline" size="sm" onClick={() => onNavigate(`/`)}>
           홈으로
         </Button>
       </div>
