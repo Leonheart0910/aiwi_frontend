@@ -18,11 +18,18 @@ import { TypingText } from "@/components/typing-text";
 export function ChatInterface({ endRef }) {
   const { chatId } = useParams(); // URL에서 :chatId 추출
   const [input, setInput] = useState(""); // 입력 상태
+  const [messages, setMessages] = useState([]); // 메시지 상태
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태
   const messagesEndRef = useRef(null); // 메시지 끝 참조
-  // 현재 채팅 hash 값, 채팅 목록 리스트, 채팅 로딩 함수, 채팅 로그 저장 함수, 새 채팅 시작 함수
-  const { currentChatId, chatLogs, loadChat, saveChatLog, startNewChat } =
-    useChat();
+  // 현재 채팅 hash 값, 채팅 목록 리스트, 채팅 로딩 함수, 채팅 로그 저장 함수, 새 채팅 시작 함수, 메시지 전송 함수
+  const {
+    currentChatId,
+    chatLogs,
+    loadChat,
+    saveChatLog,
+    startNewChat,
+    // sendMessage,
+  } = useChat();
 
   // ✅ chatId 기반 loadChat 실행
   useEffect(() => {
@@ -87,12 +94,94 @@ export function ChatInterface({ endRef }) {
       saveChatLog(chatId, updatedMessages);
     }
 
-    // 봇 응답 추가 추후 백엔드 연동 시 수정
-    setTimeout(() => {
+    // 챗봇 응답 요청
+    try {
+      // const botResponse = await sendMessage(chatId, input);
+      const botResponse = {
+        chat_id: 4,
+        title: "채팅방 타이틀", // 첫 사용자 input 값
+        chat_log: [
+          {
+            chat_log_id: 10,
+            user_input: "유저의 입력값",
+            keyword_text: "3개의 키워드에 대한 응답값",
+            seo_keyword_text: "seo키워드에 대한 응답값",
+            products: [
+              {
+                product_id: 123,
+                product_name: "상품 이름",
+                product_link: "상품의 링크",
+                product_price: "상품의 가격",
+                rank: 1,
+                image: {
+                  image_id: 32,
+                  image_url: "이미지 url",
+                  created_at: "생성시간",
+                  updated_at: "업데이트시간",
+                },
+                created_at: "생성시간",
+                updated_at: "업데이트시간",
+              },
+              {
+                product_id: 123,
+                product_name: "상품 이름",
+                product_link: "상품의 링크",
+                product_price: "상품의 가격",
+                rank: 1,
+                image: {
+                  image_id: 32,
+                  image_url: "이미지 url",
+                  created_at: "생성시간",
+                  updated_at: "업데이트시간",
+                },
+                created_at: "생성시간",
+                updated_at: "업데이트시간",
+              },
+              {
+                product_id: 123,
+                product_name: "상품 이름",
+                product_link: "상품의 링크",
+                product_price: "상품의 가격",
+                rank: 1,
+                image: {
+                  image_id: 32,
+                  image_url: "이미지 url",
+                  created_at: "생성시간",
+                  updated_at: "업데이트시간",
+                },
+                created_at: "생성시간",
+                updated_at: "업데이트시간",
+              },
+            ],
+            recommend: [
+              {
+                recommend_id: 1,
+                recommend_text: "추천하는 상품은...",
+                rank: 1,
+              },
+              {
+                recommend_id: 2,
+                recommend_text: "추천하는 상품은...",
+                rank: 2,
+              },
+              {
+                recommend_id: 3,
+                recommend_text: "추천하는 상품은...",
+                rank: 3,
+              },
+            ],
+            created_at: "로그 생성 시간",
+            updated_at: "로그 수정 시간",
+          },
+        ],
+        created_at: "채팅 생성 시간",
+        updated_at: "채팅 수정 시간",
+      };
+
       const botMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        content: "안녕하세요. 무엇을 도와드릴까요?",
+        content: botResponse.message,
         timestamp: new Date().toISOString(),
         isTyping: true,
       };
@@ -104,7 +193,10 @@ export function ChatInterface({ endRef }) {
       if (chatId) {
         saveChatLog(chatId, messagesWithBotResponse);
       }
-    }, 500);
+    } catch (error) {
+      console.error("챗봇 응답 에러:", error);
+      setIsLoading(false);
+    }
   };
 
   // ✅ Enter 키로 메시지 전송

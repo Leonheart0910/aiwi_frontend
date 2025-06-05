@@ -8,9 +8,9 @@ const base =
 
 // 채팅 관련 API 호출 함수
 export function ChatProvider({ children, onNavigate }) {
-  const [currentChatId, setCurrentChatId] = useState(null);
-  const [chatLogs, setChatLogs] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [currentChatId, setCurrentChatId] = useState(null); // 현재 대화 중인 Chat ID
+  const [chatLogs, setChatLogs] = useState([]); // 현재 chat의 대화 내역
+  const [isLoading, setIsLoading] = useState(false); //
   const [error, setError] = useState(null);
 
   // ✅ 새 채팅 시작 /api/v1/input
@@ -34,24 +34,8 @@ export function ChatProvider({ children, onNavigate }) {
         // if (!response.ok) throw new Error("새 채팅 생성 실패");
         // const newChat = await response.json();
 
-        const newChat = {
-          chat_id: hash,
-          user_id: userId,
-          status: "ok",
-          final_result: [
-            {
-              type: "text",
-              text: "안녕하세요. 채팅을 시작합니다.",
-            },
-          ],
-          title: "채팅 제목",
-        };
-        console.log(newChat);
-
         // 3) 상태 업데이트 & 리다이렉트
         setCurrentChatId(hash);
-        setChatLogs((prev) => [newChat, ...prev]);
-
         if (shouldNavigate && onNavigate) {
           onNavigate(`/chat/${hash}`);
         }
@@ -233,6 +217,36 @@ export function ChatProvider({ children, onNavigate }) {
     }
   }, []);
 
+  // ✅ 챗봇에 메시지 전송 및 응답 받기
+  const sendMessage = useCallback(async (chatId, message) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await fetch(
+        `${base}/api/v1/chat/${chatId}/${encodeURIComponent(message)}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("챗봇 응답을 받는데 실패했습니다.");
+      }
+
+      const botResponse = await response.json();
+      return botResponse;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   return (
     <ChatContext.Provider
       value={{
@@ -246,6 +260,7 @@ export function ChatProvider({ children, onNavigate }) {
         loadChatLogs,
         clearChat,
         loadAllChats,
+        sendMessage,
       }}
     >
       {children}

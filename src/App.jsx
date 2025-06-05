@@ -11,8 +11,8 @@ export default function App() {
   const navigate = useNavigate();
 
   return (
-    <CartProvider>
-      <ChatProvider onNavigate={navigate}>
+    <CartProvider onNavigate={navigate}>
+      <ChatProvider>
         <Routes>
           {/* 로그인 페이지 */}
           <Route path="/login" element={<Login />} />
@@ -23,6 +23,7 @@ export default function App() {
           {/* 채팅 인터페이스 페이지 */}
           <Route path="/chat/:hash" element={<Home />} />
           <Route path="/" element={<Home />} />
+          <Route path="" element={<Home />} />
           {/* 장바구니 페이지 */}
           <Route path="/cart/:collection_id" element={<CartDetail />} />
         </Routes>
