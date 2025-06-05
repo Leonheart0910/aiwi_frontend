@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Sidebar } from "./sidebar";
 import { ChatInterface } from "@/chat/chat-interface";
 import { UserMenu } from "./user-menu";
@@ -14,7 +14,7 @@ import {
 } from "@/components/icons";
 
 // Home 컴포넌트
-export default function Home() {
+export default function Home({ onNavigate }) {
   // 네비게이션 이동
   const navigate = useNavigate();
   // 사용자 메뉴 열림 상태
@@ -25,16 +25,8 @@ export default function Home() {
   const userMenuRef = useRef(null);
 
   // 새 채팅 시작
-  const { hash } = useParams();
-  const { chatLogs, loadChat, startNewChat } = useChat();
+  const { chatLogs, startNewChat } = useChat();
   const messagesEndRef = useRef();
-
-  // ✅ URL 에 hash가 있으면 loadChat
-  useEffect(() => {
-    if (hash) {
-      loadChat(hash);
-    }
-  }, [hash, loadChat]);
 
   // ✅ 사용자 메뉴 외부 클릭 이벤트 처리
   useEffect(() => {
@@ -80,7 +72,7 @@ export default function Home() {
         } transition-all duration-300 ease-in-out overflow-hidden border-r border-gray-200`}
       >
         <div className="w-64">
-          <Sidebar />
+          <Sidebar onNavigate={onNavigate} />
         </div>
       </div>
 

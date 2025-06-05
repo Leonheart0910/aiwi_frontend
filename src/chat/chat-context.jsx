@@ -88,8 +88,8 @@ export function ChatProvider({ children, onNavigate }) {
         chat_log: [
           {
             chat_log_id: 10,
-            user_input: "유저의 입력값",
-            keyword_text: "3개의 키워드에 대한 응답값",
+            user_input: "유저의 입력값asdsadsa",
+            keyword_text: "3개의 키워드에 대한 응답값asdas",
             seo_keyword_text: "seo키워드에 대한 응답값",
             products: [
               {
@@ -139,7 +139,7 @@ export function ChatProvider({ children, onNavigate }) {
           {
             chat_log_id: 10,
             user_input: "유저의 입력값",
-            keyword_text: "3개의 키워드에 대한 응답값",
+            keyword_text: "3개의 키워드에 대한 응답값dsadasd",
             seo_keyword_text: "seo키워드에 대한 응답값",
             products: [
               {

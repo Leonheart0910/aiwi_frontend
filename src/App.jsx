@@ -31,7 +31,10 @@ export default function App() {
           {/* 로그아웃 페이지 */}
           <Route path="/logout" element={<DeleteAccount />} />
           {/* 채팅 인터페이스 페이지 */}
-          <Route path="/chat/:hash" element={<Home />} />
+          <Route
+            path="/chat/:hash"
+            element={<Home onNavigate={onNavigate} />}
+          />
           <Route path="/" element={<Home />} />
           {/* 장바구니 페이지 */}
           <Route

@@ -20,7 +20,7 @@ export function ChatInterface({ endRef }) {
   const messagesEndRef = useRef(null); // 메시지 끝 참조
   const {
     currentChatId,
-    loadChat,
+    // loadChat,
     startNewChat,
     sendMessage,
     messages,
@@ -47,13 +47,6 @@ export function ChatInterface({ endRef }) {
       setSelectedProduct(null);
     }
   };
-
-  // ✅ currentChatId 변경 시 messages 상태 세팅
-  useEffect(() => {
-    if (currentChatId) {
-      loadChat(currentChatId);
-    }
-  }, [currentChatId, loadChat]);
 
   // ✅ messages가 바뀔 때 항상 하단으로 스크롤
   useEffect(() => {

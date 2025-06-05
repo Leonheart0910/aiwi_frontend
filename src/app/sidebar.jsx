@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import {
   FolderIcon,
@@ -12,10 +11,9 @@ import { useChat } from "@/chat/chatContext";
 import { CartSection } from "@/cart/CartSection";
 import recommendationBook from "@/assets/recommendation_book.png";
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }) {
   const { chatLogs, loadChat, currentChatId, loadChatLogs, messages } =
     useChat();
-  const navigate = useNavigate();
 
   // ✅ 컴포넌트 마운트 시 채팅 로그 불러오기
   useEffect(() => {
@@ -65,7 +63,7 @@ export function Sidebar() {
   // ✅ 채팅 로그 클릭 시 채팅 로드
   const handleChatClick = (chatId) => {
     loadChat(chatId);
-    navigate(`/chat/${chatId}`);
+    onNavigate(`/chat/${chatId}`);
   };
 
   return (
