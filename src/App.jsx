@@ -7,6 +7,8 @@ import Signup from "@/app/signup";
 import DeleteAccount from "@/app/deleteAccount";
 import CartDetail from "@/cart/CartDetail";
 
+import Landing from "@/landing/landing";  // 실제 경로 맞게 조정
+
 export default function App() {
   const navigate = useNavigate();
 
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="" element={<Home />} />
           {/* 장바구니 페이지 */}
           <Route path="/cart/:collection_id" element={<CartDetail />} />
+          {/* 랜딩 페이지 라우트 추가 */}
+          <Route path="/landing" element={<Landing />} />
         </Routes>
       </ChatProvider>
     </CartProvider>
