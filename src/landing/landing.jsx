@@ -22,7 +22,7 @@ export default function Landing() {
             개발진
           </Link>
           <Link to="/about" className={styles.navLink}>
-            이용 방법
+            이용 약관
           </Link>
           <Link to="/contact" className={styles.navLink}>
             광고 문의
