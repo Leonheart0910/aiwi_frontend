@@ -33,11 +33,12 @@ export default function App() {
           {/* 채팅 인터페이스 페이지 */}
           <Route path="/chat/:hash" element={<Home />} />
           <Route path="/" element={<Home />} />
-          <Route path="" element={<Home />} />
           {/* 장바구니 페이지 */}
-          <Route path="/cart/:collection_id" element={<CartDetail />} />
+          <Route
+            path="/cart/:collection_id"
+            element={<CartDetail onNavigate={onNavigate} />}
+          />
           {/* 랜딩 페이지 라우트 추가 */}
-
           <Route path="/landing" element={<Landing />} />
         </Routes>
       </ChatProvider>
