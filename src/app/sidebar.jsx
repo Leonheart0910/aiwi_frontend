@@ -1,31 +1,21 @@
 import { useEffect } from "react";
 
 import {
-  FolderIcon,
   ShoppingCartIcon,
   ClockIcon,
   ExternalLinkIcon,
-  PlusIcon,
 } from "@/components/icons";
 import { useChat } from "@/chat/chatContext";
 import { CartSection } from "@/cart/CartSection";
 import recommendationBook from "@/assets/recommendation_book.png";
 
 export function Sidebar({ onNavigate }) {
-  const { chatLogs, loadChat, currentChatId, loadChatLogs, messages } =
-    useChat();
+  const { chatLogs, loadChat, currentChatId, loadChatLogs } = useChat();
 
   // ✅ 컴포넌트 마운트 시 채팅 로그 불러오기
   useEffect(() => {
     loadChatLogs();
   }, [loadChatLogs]);
-
-  // ✅ 디버깅을 위한 로그
-  useEffect(() => {
-    console.log("chatLogs: ", chatLogs);
-    console.log("currentChatId: ", currentChatId);
-    console.log("messages: ", messages);
-  }, [chatLogs, currentChatId, messages]);
 
   // ✅ 채팅 로그를 날짜별로 그룹화
   const groupedChats = chatLogs.reduce((groups, chat) => {

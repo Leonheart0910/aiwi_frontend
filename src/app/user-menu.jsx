@@ -15,15 +15,12 @@ export function UserMenu() {
   const navigate = useNavigate();
   const { clearChat } = useChat();
 
-  console.log(navigate);
+  // ✅ 로그아웃
   const handleLogout = () => {
     // 로컬 스토리지 데이터 정리
-    localStorage.removeItem("chats");
-    localStorage.removeItem("user");
-
+    localStorage.removeItem("user_id");
     // 채팅 상태 초기화
     clearChat();
-
     // 로그인 페이지로 이동
     navigate("/login");
   };
@@ -31,14 +28,6 @@ export function UserMenu() {
   return (
     <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
       <div className="p-2 space-y-1">
-        <a
-          href="#"
-          className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
-        >
-          <UploadIcon className="h-4 w-4 text-gray-500" />
-          <span className="text-sm">플랜 업그레이드</span>
-        </a>
-
         <a
           href="#"
           className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"

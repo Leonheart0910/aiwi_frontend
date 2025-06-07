@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 
+const base =
+  import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+
 export default function SignupPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -29,20 +32,20 @@ export default function SignupPage() {
     setError("");
 
     try {
-      // const response = await fetch(`${base}/signup`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     ...formData,
-      //     age: parseInt(formData.age),
-      //   }),
-      // });
+      const response = await fetch(`${base}/api/v1/user/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          age: parseInt(formData.age),
+        }),
+      });
 
-      // if (!response.ok) {
-      //   throw new Error("회원가입에 실패했습니다.");
-      // }
+      if (!response.ok) {
+        throw new Error("회원가입에 실패했습니다.");
+      }
 
       // 회원가입 성공 시 로그인 페이지로 이동
       navigate("/login");

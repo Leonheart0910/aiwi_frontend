@@ -1,4 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
@@ -20,7 +23,8 @@ export function ChatInterface({ endRef }) {
   const messagesEndRef = useRef(null); // 메시지 끝 참조
   const {
     currentChatId,
-    // loadChat,
+    chatLogs,
+    loadChatLogs,
     startNewChat,
     sendMessage,
     messages,
@@ -47,6 +51,25 @@ export function ChatInterface({ endRef }) {
       setSelectedProduct(null);
     }
   };
+
+  // ✅ 컴포넌트 마운트 시 채팅 로그 불러오기
+  useEffect(() => {
+    loadChatLogs();
+  }, [loadChatLogs]);
+
+  // ✅ 디버깅을 위한 로그
+  useEffect(() => {
+    console.log("chatLogs: ", chatLogs);
+    console.log("currentChatId: ", currentChatId);
+    console.log("messages: ", messages);
+  }, [chatLogs, currentChatId, messages]);
+
+  // ✅ currentChatId 변경 시 messages 상태 세팅
+  // useEffect(() => {
+  //   if (currentChatId) {
+  //     loadChat(currentChatId);
+  //   }
+  // }, [currentChatId, loadChat]);
 
   // ✅ messages가 바뀔 때 항상 하단으로 스크롤
   useEffect(() => {
@@ -159,13 +182,13 @@ export function ChatInterface({ endRef }) {
                                 {prods.map((prod) => (
                                   <div
                                     key={prod.product_id}
-                                    className="flex flex-col items-center border p-2 rounded-md hover:shadow-sm"
+                                    className="flex flex-col items-center border p-2 rounded-md hover:shadow-sm w-full"
                                   >
                                     <a
                                       href={prod.product_link}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="flex flex-col items-center"
+                                      className="flex flex-col items-center w-full"
                                     >
                                       <img
                                         src={prod.image.image_url}
@@ -173,7 +196,7 @@ export function ChatInterface({ endRef }) {
                                         className="w-16 h-16 object-cover mb-1"
                                       />
                                     </a>
-                                    <span className="text-sm font-medium truncate">
+                                    <span className="text-sm font-medium w-full text-center break-words">
                                       {prod.product_name}
                                     </span>
                                     <span className="text-xs text-gray-500">
@@ -188,7 +211,31 @@ export function ChatInterface({ endRef }) {
                                   </div>
                                 ))}
                               </div>
-                              <p className="text-sm text-blue-600">{recText}</p>
+                              <div className="text-sm text-black prose max-w-full">
+                                <ReactMarkdown
+                                  remarkPlugins={[remarkGfm]}
+                                  rehypePlugins={[rehypeRaw]}
+                                  components={{
+                                    h1: ({ children }) => (
+                                      <h1 className="text-2xl font-bold text-blue-700 mt-4 mb-2">
+                                        {children}
+                                      </h1>
+                                    ),
+                                    h2: ({ children }) => (
+                                      <h2 className="text-xl font-bold text-blue-600 mt-3 mb-2">
+                                        {children}
+                                      </h2>
+                                    ),
+                                    h3: ({ children }) => (
+                                      <h3 className="text-lg font-semibold text-blue-500 mt-2 mb-1">
+                                        {children}
+                                      </h3>
+                                    ),
+                                  }}
+                                >
+                                  {recText}
+                                </ReactMarkdown>
+                              </div>
                             </div>
                           );
                         })}

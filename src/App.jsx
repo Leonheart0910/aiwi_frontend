@@ -8,8 +8,7 @@ import Login from "@/app/login";
 import Signup from "@/app/signup";
 import DeleteAccount from "@/app/deleteAccount";
 import CartDetail from "@/cart/CartDetail";
-
-import Landing from "@/landing/landing"; // 실제 경로 맞게 조정
+import Landing from "@/landing/landing";
 
 export default function App() {
   const navigate = useNavigate();

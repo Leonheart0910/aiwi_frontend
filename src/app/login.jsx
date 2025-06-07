@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 
-// 로그인 폼 컴포넌트
+const base =
+  import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,20 +18,21 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      // const response = await fetch(`${base}/login`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ email, password }),
-      // });
+      const response = await fetch(`${base}/api/v1/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // if (!response.ok) {
-      //   throw new Error("로그인에 실패했습니다");
-      // }
+      if (!response.ok) {
+        throw new Error("로그인에 실패했습니다");
+      }
+      const data = await response.json();
 
-      // 로그인 성공 시 사용자 정보 저장 원래는 GET 요청해야 함
-      const user_id = "a";
+      // 로그인 성공 시 사용자 정보 저장
+      const user_id = data.user_id;
       localStorage.setItem("user_id", user_id);
 
       setIsLoading(false);

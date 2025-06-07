@@ -1,5 +1,8 @@
-root = true
+# Indicates that this is the root of attributes
+root=true
 
-[*]
-end_of_line = lf
-insert_final_newline = true
+# Apply these settings to all files
+* text=auto eol=lf
+
+# Optional: force final new line in all files
+* insert_final_newline=true

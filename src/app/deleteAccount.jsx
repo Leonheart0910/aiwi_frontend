@@ -1,12 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+const base =
+  import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+const userId = import.meta.env.DEV
+  ? 7
+  : parseInt(localStorage.getItem("user_id"));
+
 export default function LogoutPage() {
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleWithdraw = async () => {
-    const userId = localStorage.getItem("user_id");
     if (!userId) {
       alert("로그인 정보를 찾을 수 없습니다.");
       return;
@@ -14,18 +19,19 @@ export default function LogoutPage() {
 
     try {
       setIsDeleting(true);
+      console.log(userId);
 
-      // const response = await fetch(`${base}/api/v1/user/withdraw`, {
-      //   method: "DELETE",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ user_id: userId }),
-      // });
+      const response = await fetch(`${base}/api/v1/user/withdraw`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
 
-      // if (!response.ok) {
-      //   throw new Error("회원 탈퇴 실패");
-      // }
+      if (!response.ok) {
+        throw new Error("회원 탈퇴 실패");
+      }
 
       alert("탈퇴가 완료되었습니다.");
       localStorage.removeItem("user_id");

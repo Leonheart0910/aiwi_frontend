@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/cart/cartContext";
 import { PlusIcon, FolderIcon } from "@/components/icons";
 import { CreateCartModal } from "./CreateCartModal";
@@ -6,9 +6,15 @@ import { useNavigate } from "react-router-dom";
 
 export function CartSection() {
   const navigate = useNavigate();
-  const { carts, createCart } = useCart();
+  const { carts, createCart, loadCarts } = useCart();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  // ✅ 컴포넌트 마운트 시 장바구니 목록 로드
+  useEffect(() => {
+    loadCarts();
+  }, [loadCarts]);
+
+  // ✅ 장바구니 생성
   const handleCreateCart = async (name) => {
     try {
       await createCart(name);
