@@ -16,7 +16,7 @@ import { Sidebar } from "@/app/sidebar";
 export default function CartDetail({ onNavigate }) {
   const { collection_id } = useParams();
   const { loadCart, removeFromCart } = useCart();
-  const [cart, setCart] = useState(null);
+  const [cart, setCart] = useState([]);
   const [error, setError] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -40,6 +40,7 @@ export default function CartDetail({ onNavigate }) {
   const fetchCart = useCallback(async () => {
     try {
       const result = await loadCart(collection_id);
+      console.log(result);
       setCart(result);
     } catch (err) {
       setError(err.message || "장바구니를 불러올 수 없습니다.");
@@ -92,7 +93,7 @@ export default function CartDetail({ onNavigate }) {
       </div>
 
       {/* 메인 컨테이너 */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col">
         {/* 헤더 */}
         <header className="flex items-center justify-between p-2 border-b border-gray-200">
           <div className="flex items-center gap-2">
@@ -142,7 +143,7 @@ export default function CartDetail({ onNavigate }) {
           </div>
         </header>
 
-        <div className="p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <FolderIcon className="w-6 h-6 text-gray-500" />
@@ -160,19 +161,26 @@ export default function CartDetail({ onNavigate }) {
                   key={item.item_id}
                   className="border rounded-lg p-4 flex flex-col gap-2"
                 >
-                  <img
-                    src={item.image?.image_url || "/placeholder.svg"}
-                    alt={item.product_name}
-                    className="w-full h-40 object-cover rounded-md"
-                  />
+                  <a
+                    href={item.product_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center w-full"
+                  >
+                    <img
+                      src={item.image?.image_url || "/placeholder.svg"}
+                      alt={item.product_name.split("<b>")[0].trim()}
+                      className="w-full aspect-square object-contain rounded-md hover:opacity-90 transition-opacity"
+                    />
+                  </a>
                   <div className="text-sm text-gray-500">
-                    {item.category_name}
+                    {item.product_name.split("<b>")[0].trim()}
                   </div>
                   <div className="font-medium text-base">
-                    {item.product_name}
+                    {item.product_link}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {item.product_info}
+                    {item.product_name.split("<b>")[0].trim()}
                   </div>
                   <Button
                     size="sm"

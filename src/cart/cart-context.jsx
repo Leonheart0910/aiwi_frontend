@@ -14,7 +14,9 @@ export function CartProvider({ children }) {
       setError(null);
 
       const user_id = parseInt(localStorage.getItem("user_id"));
-      const response = await fetch(`/api/v1/collection/user/${user_id}`);
+      const base =
+        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const response = await fetch(`${base}/api/v1/collection/list/${user_id}`);
       if (!response.ok) {
         throw new Error("장바구니 목록을 불러오는데 실패했습니다.");
       }
@@ -88,12 +90,16 @@ export function CartProvider({ children }) {
       setError(null);
       setCurrentCartId(collection_id);
 
-      const response = await fetch(`/api/v1/collection/${collection_id}`);
+      const base =
+        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const response = await fetch(
+        `${base}/api/v1/collection/${collection_id}`
+      );
       if (!response.ok) {
         throw new Error("장바구니를 불러오는데 실패했습니다.");
       }
       const cart = await response.json();
-
+      setCarts(cart.items);
       // const cart = {
       //   collection_id: 1,
       //   collection_title: "여름 세일 장바구니",
@@ -144,7 +150,9 @@ export function CartProvider({ children }) {
 
       console.log(cartId, product);
       const user_id = parseInt(localStorage.getItem("user_id"));
-      const response = await fetch(`/api/v1/collection/register`, {
+      const base =
+        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const response = await fetch(`${base}/api/v1/collection/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -173,8 +181,10 @@ export function CartProvider({ children }) {
       setError(null);
 
       console.log(collectionId, itemId);
+      const base =
+        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
       const response = await fetch(
-        `/api/v1/collection/${collectionId}/${itemId}`,
+        `${base}/api/v1/collection/${collectionId}/${itemId}`,
         {
           method: "DELETE",
         }
@@ -205,7 +215,11 @@ export function CartProvider({ children }) {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/carts/${cartId}`, {
+        const base =
+          import.meta.env.VITE_USE_MOCK === "true"
+            ? "http://localhost:8000"
+            : "";
+        const response = await fetch(`${base}/api/v1/collection/${cartId}`, {
           method: "DELETE",
         });
 
@@ -213,7 +227,9 @@ export function CartProvider({ children }) {
           throw new Error("장바구니를 삭제하는데 실패했습니다.");
         }
 
-        setCarts((prev) => prev.filter((cart) => cart.id !== cartId));
+        setCarts((prev) =>
+          prev.filter((cart) => cart.collection_id !== cartId)
+        );
         if (currentCartId === cartId) {
           setCurrentCartId(null);
         }

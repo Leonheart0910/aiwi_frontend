@@ -270,6 +270,7 @@ export function ChatProvider({ children, onNavigate }) {
         setError(null);
 
         // 1. 새 채팅 생성
+        let chatIdToUse = currentChatId;
         if (currentChatId === null) {
           const hash = uuidv4();
           setCurrentChatId(hash);
@@ -278,10 +279,11 @@ export function ChatProvider({ children, onNavigate }) {
             ...prev,
             {
               chat_id: hash,
-              title: "새 채팅",
+              title: message,
               updated_at: new Date().toISOString(),
             },
           ]);
+          chatIdToUse = hash;
         }
 
         // 2. 챗봇 응답 받기
@@ -291,7 +293,7 @@ export function ChatProvider({ children, onNavigate }) {
             : "";
         const userId = parseInt(localStorage.getItem("user_id"));
         const response = await fetch(
-          `${base}/api/v1/chat/${currentChatId}/${userId}/${encodeURIComponent(
+          `${base}/api/v1/chat/${chatIdToUse}/${userId}/${encodeURIComponent(
             message
           )}`,
           {
