@@ -21,17 +21,6 @@ export function CartProvider({ children }) {
       }
       const data = await response.json();
 
-      // const data = [
-      //   {
-      //     collection_id: 1,
-      //     collection_title: "여름 세일 장바구니",
-      //   },
-      //   {
-      //     collection_id: 2,
-      //     collection_title: "겨울 세일 장바구니",
-      //   },
-      // ];
-
       setCarts(data);
     } catch (err) {
       setError(err.message);
@@ -56,17 +45,7 @@ export function CartProvider({ children }) {
         },
         body: JSON.stringify({ user_id: user_id, collection_title: name }),
       });
-      console.log(JSON.stringify({ user_id: user_id, collection_title: name }));
-      console.log(response);
       const data = await response.json();
-
-      // const response = {
-      //   user_id: "유저 아이디",
-      //   collection_id: "장바구니 아이디",
-      //   collection_title: name,
-      //   created_at: new Date().toISOString(),
-      //   updated_at: new Date().toISOString(),
-      // };
 
       const newCart = {
         collection_id: data.collection_id,
@@ -97,38 +76,6 @@ export function CartProvider({ children }) {
       }
       const cart = await response.json();
       setCarts(cart.items);
-      // const cart = {
-      //   collection_id: 1,
-      //   collection_title: "여름 세일 장바구니",
-      //   user_id: 1,
-      //   created_at: "2025-05-28T12:45:00",
-      //   items: [
-      //     {
-      //       item_id: 101,
-      //       product_name: "반팔티",
-      //       product_info: "면 100%, 흰색",
-      //       category_name: "상의",
-      //       created_at: "2025-05-28T12:46:00",
-      //       image: {
-      //         image_id: 301,
-      //         image_url: "https://example.com/images/301.jpg",
-      //         created_at: "2025-05-28T12:46:00",
-      //       },
-      //     },
-      //     {
-      //       item_id: 102,
-      //       product_name: "청바지",
-      //       product_info: "스키니핏, 블루",
-      //       category_name: "하의",
-      //       created_at: "2025-05-28T12:47:00",
-      //       image: {
-      //         image_id: 302,
-      //         image_url: "https://example.com/images/302.jpg",
-      //         created_at: "2025-05-28T12:47:00",
-      //       },
-      //     },
-      //   ],
-      // };
 
       return cart;
     } catch (err) {
@@ -176,7 +123,6 @@ export function CartProvider({ children }) {
       setIsLoading(true);
       setError(null);
 
-      console.log(collectionId, itemId);
       const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(
         `${base}/api/v1/collection/${collectionId}/${itemId}`,
@@ -189,11 +135,6 @@ export function CartProvider({ children }) {
       }
       // 성공 시 로컬 상태 갱신 (loadCart로 재로드 또는 수동 제거)
       const updated = await response.json();
-
-      // const updated = {
-      //   message: "장바구니 삭제되었습니다.",
-      // };
-
       return updated;
     } catch (err) {
       setError(err.message);

@@ -52,7 +52,9 @@ export function CartSection() {
           {carts.map((cart) => (
             <button
               key={cart.collection_id}
-              onClick={() => navigate(`/cart/${cart.collection_id}`)}
+              onClick={() => {
+                navigate(`/cart/${cart.collection_id}`);
+              }}
               className="w-full flex items-center justify-between p-2 rounded-md hover:bg-gray-100 group"
             >
               <div className="flex items-center gap-2">

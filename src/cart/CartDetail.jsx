@@ -19,7 +19,6 @@ export default function CartDetail({ onNavigate }) {
   const [cart, setCart] = useState([]);
   const [error, setError] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const userMenuRef = useRef(null);
 
   // ✅ 사용자 메뉴 외부 클릭 이벤트 처리
@@ -81,30 +80,11 @@ export default function CartDetail({ onNavigate }) {
 
   return (
     <div className="flex h-screen bg-white">
-      {/* 사이드바 */}
-      <div
-        className={`${
-          isSidebarOpen ? "w-64" : "w-0"
-        } transition-all duration-300 ease-in-out overflow-hidden border-r border-gray-200`}
-      >
-        <div className="w-64">
-          <Sidebar onNavigate={onNavigate} />
-        </div>
-      </div>
-
       {/* 메인 컨테이너 */}
       <main className="flex-1 flex flex-col">
         {/* 헤더 */}
         <header className="flex items-center justify-between p-2 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-500"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <MenuIcon className="h-5 w-5" />
-            </Button>
             <Button
               variant="ghost"
               size="icon"

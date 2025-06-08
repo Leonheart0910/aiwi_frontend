@@ -53,7 +53,6 @@ export function ChatProvider({ children, onNavigate }) {
       recommendByRank,
       isStructured: true,
     };
-    console.log(recommendByRank);
     // 메시지 세팅 분기
     if (!options.typingEffect) {
       setMessages((prev) => [...prev, userMessage, botMessage1, botMessage2]);
@@ -87,110 +86,6 @@ export function ChatProvider({ children, onNavigate }) {
       const chatRes = await fetch(`${base}/api/v1/chat/${hash}`);
       if (!chatRes.ok) throw new Error("불러오기 실패");
       const chats = await chatRes.json();
-      console.log(chats);
-
-      // const chats = [
-      //   {
-      //     chat_id: 4,
-      //     title: "채팅방 타이틀",
-      //     chat_log: [
-      //       {
-      //         chat_log_id: 10,
-      //         user_input: "유저의 입력값asdsadsa",
-      //         keyword_text: "3개의 키워드에 대한 응답값asdas",
-      //         seo_keyword_text: "seo키워드에 대한 응답값",
-      //         products: [
-      //           {
-      //             product_id: 123,
-      //             product_name: "상품 이름",
-      //             product_link: "상품의 링크",
-      //             product_price: "상품의 가격",
-      //             rank: 1,
-      //             image: {
-      //               image_id: 32,
-      //               image_url: "이미지 url",
-      //               created_at: "생성시간",
-      //               updated_at: "업데이트시간",
-      //             },
-      //             created_at: "생성시간",
-      //             updated_at: "업데이트시간",
-      //           },
-      //         ],
-      //         recommend: [
-      //           {
-      //             recommend_id: 1,
-      //             recommend_text: "추천하는 상품은...",
-      //             rank: 1,
-      //           },
-      //           {
-      //             recommend_id: 2,
-      //             recommend_text: "추천하는 상품은...",
-      //             rank: 2,
-      //           },
-      //           {
-      //             recommend_id: 3,
-      //             recommend_text: "추천하는 상품은...",
-      //             rank: 3,
-      //           },
-      //         ],
-      //         created_at: "로그 생성 시간",
-      //         updated_at: "로그 수정 시간",
-      //       },
-      //     ],
-      //     created_at: "채팅 생성 시간",
-      //     updated_at: "채팅 수정 시간",
-      //   },
-      //   {
-      //     chat_id: 4,
-      //     title: "채팅방 타이틀",
-      //     chat_log: [
-      //       {
-      //         chat_log_id: 10,
-      //         user_input: "유저의 입력값",
-      //         keyword_text: "3개의 키워드에 대한 응답값dsadasd",
-      //         seo_keyword_text: "seo키워드에 대한 응답값",
-      //         products: [
-      //           {
-      //             product_id: 123,
-      //             product_name: "상품 이름",
-      //             product_link: "상품의 링크",
-      //             product_price: "상품의 가격",
-      //             rank: 1,
-      //             image: {
-      //               image_id: 32,
-      //               image_url: "이미지 url",
-      //               created_at: "생성시간",
-      //               updated_at: "업데이트시간",
-      //             },
-      //             created_at: "생성시간",
-      //             updated_at: "업데이트시간",
-      //           },
-      //         ],
-      //         recommend: [
-      //           {
-      //             recommend_id: 1,
-      //             recommend_text: "추천하는 상품은...",
-      //             rank: 1,
-      //           },
-      //           {
-      //             recommend_id: 2,
-      //             recommend_text: "추천하는 상품은...",
-      //             rank: 2,
-      //           },
-      //           {
-      //             recommend_id: 3,
-      //             recommend_text: "추천하는 상품은...",
-      //             rank: 3,
-      //           },
-      //         ],
-      //         created_at: "로그 생성 시간",
-      //         updated_at: "로그 수정 시간",
-      //       },
-      //     ],
-      //     created_at: "채팅 생성 시간",
-      //     updated_at: "채팅 수정 시간",
-      //   },
-      // ];
 
       for (const chat of chats.chat_log) {
         parseChatResponse(chat, { typingEffect: false });
@@ -222,23 +117,6 @@ export function ChatProvider({ children, onNavigate }) {
         throw new Error("채팅 목록을 불러오는데 실패했습니다.");
       }
       const chats = await response.json();
-      // const chats = [
-      //   {
-      //     chat_id: "12412214",
-      //     title: "채팅 1",
-      //     updated_at: "2025-06-04 18:50:43.895283",
-      //   },
-      //   {
-      //     chat_id: "4646345",
-      //     title: "채팅 2",
-      //     updated_at: "2025-06-05 18:50:43.895283",
-      //   },
-      //   {
-      //     chat_id: "12589065-",
-      //     title: "채팅 3",
-      //     updated_at: "2025-06-06 01:30:43.895283",
-      //   },
-      // ];
 
       setChatLogs(
         chats.map((chat) => ({
@@ -308,177 +186,6 @@ export function ChatProvider({ children, onNavigate }) {
         const botResponse = await response.json();
         console.log(botResponse);
 
-        // const botResponse = {
-        //   chat_id: 1,
-        //   title: "채팅방 타이틀",
-        //   chat_log: [
-        //     {
-        //       chat_log_id: 10,
-        //       user_input: "유저의 입력값",
-        //       keyword_text: "3개의 키워드에 대한 응답값",
-        //       seo_keyword_text: "seo키워드에 대한 응답값",
-        //       products: [
-        //         {
-        //           product_id: 123,
-        //           product_name: "상품 이름 1",
-        //           product_link: "https://example.com/product/123",
-        //           product_price: "₩10,000",
-        //           rank: 1,
-        //           image: {
-        //             image_id: 32,
-        //             image_url: "https://example.com/images/32.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 124,
-        //           product_name: "상품 이름 4",
-        //           product_link: "https://example.com/product/124",
-        //           product_price: "₩20,000",
-        //           rank: 2,
-        //           image: {
-        //             image_id: 33,
-        //             image_url: "https://example.com/images/33.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 125,
-        //           product_name: "상품 이름 7",
-        //           product_link: "https://example.com/product/125",
-        //           product_price: "₩30,000",
-        //           rank: 3,
-        //           image: {
-        //             image_id: 34,
-        //             image_url: "https://example.com/images/34.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 126,
-        //           product_name: "상품 이름 2",
-        //           product_link: "https://example.com/product/126",
-        //           product_price: "₩11,000",
-        //           rank: 1,
-        //           image: {
-        //             image_id: 35,
-        //             image_url: "https://example.com/images/35.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 127,
-        //           product_name: "상품 이름 3",
-        //           product_link: "https://example.com/product/127",
-        //           product_price: "₩12,000",
-        //           rank: 1,
-        //           image: {
-        //             image_id: 36,
-        //             image_url: "https://example.com/images/36.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 128,
-        //           product_name: "상품 이름 5",
-        //           product_link: "https://example.com/product/128",
-        //           product_price: "₩21,000",
-        //           rank: 2,
-        //           image: {
-        //             image_id: 37,
-        //             image_url: "https://example.com/images/37.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 129,
-        //           product_name: "상품 이름 6",
-        //           product_link: "https://example.com/product/129",
-        //           product_price: "₩22,000",
-        //           rank: 2,
-        //           image: {
-        //             image_id: 38,
-        //             image_url: "https://example.com/images/38.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 130,
-        //           product_name: "상품 이름 8",
-        //           product_link: "https://example.com/product/130",
-        //           product_price: "₩31,000",
-        //           rank: 3,
-        //           image: {
-        //             image_id: 39,
-        //             image_url: "https://example.com/images/39.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //         {
-        //           product_id: 134,
-        //           product_name: "상품 이름 9",
-        //           product_link: "https://example.com/product/130",
-        //           product_price: "₩99,000",
-        //           rank: 3,
-        //           image: {
-        //             image_id: 39,
-        //             image_url: "https://example.com/images/39.jpg",
-        //             created_at: "2025-06-05T10:00:00Z",
-        //             updated_at: "2025-06-05T10:00:00Z",
-        //           },
-        //           created_at: "2025-06-05T10:00:00Z",
-        //           updated_at: "2025-06-05T10:00:00Z",
-        //         },
-        //       ],
-        //       recommend: [
-        //         {
-        //           recommend_id: 1,
-        //           recommend_text: "rank 1 추천 텍스트",
-        //           rank: 1,
-        //         },
-        //         {
-        //           recommend_id: 2,
-        //           recommend_text: "rank 2 추천 텍스트",
-        //           rank: 2,
-        //         },
-        //         {
-        //           recommend_id: 3,
-        //           recommend_text: "rank 3 추천 텍스트",
-        //           rank: 3,
-        //         },
-        //       ],
-        //       created_at: "로그 생성 시간",
-        //       updated_at: "로그 수정 시간",
-        //     },
-        //   ],
-        //   created_at: "채팅 생성 시간",
-        //   updated_at: "채팅 수정 시간",
-        // };
-
         // 3. 채팅방 타이틀 업데이트
         updateChatTitle(currentChatId, botResponse.title);
 
@@ -509,6 +216,28 @@ export function ChatProvider({ children, onNavigate }) {
     [currentChatId, onNavigate, updateChatTitle]
   );
 
+  // ✅ 채팅 로그 삭제
+  const deleteChat = useCallback(async (chatId) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const base = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${base}/api/v1/chat/${chatId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("채팅 로그를 삭제하는데 실패했습니다.");
+      }
+      setChatLogs((prev) => prev.filter((chat) => chat.chat_id !== chatId));
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+      throw err;
+    }
+  }, []);
+
   return (
     <ChatContext.Provider
       value={{
@@ -525,6 +254,7 @@ export function ChatProvider({ children, onNavigate }) {
         updateChatTitle,
         setMessages,
         setIsLoading,
+        deleteChat,
       }}
     >
       {children}

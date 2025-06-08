@@ -1,21 +1,15 @@
-import { useEffect } from "react";
-
 import {
   ShoppingCartIcon,
   ClockIcon,
   ExternalLinkIcon,
+  TrashIcon,
 } from "@/components/icons";
 import { useChat } from "@/chat/chatContext";
 import { CartSection } from "@/cart/CartSection";
 import recommendationBook from "@/assets/recommendation_book.png";
 
 export function Sidebar({ onNavigate }) {
-  const { chatLogs, loadChat, currentChatId, loadChatLogs } = useChat();
-
-  // ✅ 컴포넌트 마운트 시 채팅 로그 불러오기
-  useEffect(() => {
-    loadChatLogs();
-  }, [loadChatLogs]);
+  const { chatLogs, loadChat, currentChatId, deleteChat } = useChat();
 
   // ✅ 채팅 로그를 날짜별로 그룹화
   const groupedChats = chatLogs.reduce((groups, chat) => {
@@ -54,6 +48,12 @@ export function Sidebar({ onNavigate }) {
   const handleChatClick = (chatId) => {
     loadChat(chatId);
     onNavigate(`/chat/${chatId}`);
+  };
+
+  // ✅ 채팅 로그 삭제
+  const handleDeleteChat = (e, chatId) => {
+    e.stopPropagation();
+    deleteChat(chatId);
   };
 
   return (
@@ -124,12 +124,20 @@ export function Sidebar({ onNavigate }) {
                 <button
                   key={chat.chat_id}
                   onClick={() => handleChatClick(chat.chat_id)}
-                  className={`w-full flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm ${
+                  className={`w-full flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm group ${
                     chat.chat_id === currentChatId ? "bg-gray-100" : ""
                   }`}
                 >
-                  <ClockIcon className="h-4 w-4 text-gray-500" />
-                  <span className="truncate">{chat.title}</span>
+                  <div className="flex-shrink-0">
+                    <ClockIcon className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <span className="truncate text-left">{chat.title}</span>
+                  <div
+                    onClick={(e) => handleDeleteChat(e, chat.chat_id)}
+                    className="p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ml-auto"
+                  >
+                    <TrashIcon className="h-4 w-4" />
+                  </div>
                 </button>
               ))}
             </div>

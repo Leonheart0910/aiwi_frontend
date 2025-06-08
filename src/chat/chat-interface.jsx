@@ -64,13 +64,6 @@ export function ChatInterface({ endRef }) {
     console.log("messages: ", messages);
   }, [chatLogs, currentChatId, messages]);
 
-  // ✅ currentChatId 변경 시 messages 상태 세팅
-  // useEffect(() => {
-  //   if (currentChatId) {
-  //     loadChat(currentChatId);
-  //   }
-  // }, [currentChatId, loadChat]);
-
   // ✅ messages가 바뀔 때 항상 하단으로 스크롤
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
