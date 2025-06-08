@@ -166,12 +166,6 @@ export function ChatProvider({ children, onNavigate }) {
         // 2. 챗봇 응답 받기
         const base = import.meta.env.VITE_BACKEND_URL;
         const userId = parseInt(localStorage.getItem("user_id"));
-        console.log(
-          `${base}/api/v1/chat/${chatIdToUse}/${userId}/${encodeURIComponent(
-            message
-          )}`
-        );
-
         const response = await fetch(
           `${base}/api/v1/chat/${chatIdToUse}/${userId}/${encodeURIComponent(
             message
@@ -184,7 +178,6 @@ export function ChatProvider({ children, onNavigate }) {
           throw new Error("챗봇 응답을 받는데 실패했습니다.");
         }
         const botResponse = await response.json();
-        console.log(botResponse);
 
         // 3. 채팅방 타이틀 업데이트
         updateChatTitle(currentChatId, botResponse.title);
@@ -242,6 +235,7 @@ export function ChatProvider({ children, onNavigate }) {
     <ChatContext.Provider
       value={{
         currentChatId,
+        setCurrentChatId,
         chatLogs,
         isLoading,
         error,

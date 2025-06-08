@@ -14,7 +14,7 @@ export default function SignupPage() {
   });
   const [error, setError] = useState("");
 
-  // 회원가입 폼 데이터 변경
+  // ✅ 회원가입 폼 데이터 변경
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -53,8 +53,8 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
-      <div className="w-full max-w-md space-y-8">
+    <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="w-full max-w-md mx-auto space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">회원가입</h1>
           <p className="mt-2 text-gray-600">새로운 계정을 만들어보세요</p>
@@ -106,7 +106,7 @@ export default function SignupPage() {
               <label className="block text-sm font-medium text-gray-700">
                 성별
               </label>
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <label className="flex items-center">
                   <input
                     type="radio"
@@ -114,7 +114,7 @@ export default function SignupPage() {
                     value="male"
                     checked={formData.sex === "male"}
                     onChange={handleChange}
-                    className="mr-2"
+                    className="mr-2 h-4 w-4 text-blue-600"
                   />
                   남성
                 </label>
@@ -125,7 +125,7 @@ export default function SignupPage() {
                     value="female"
                     checked={formData.sex === "female"}
                     onChange={handleChange}
-                    className="mr-2"
+                    className="mr-2 h-4 w-4 text-blue-600"
                   />
                   여성
                 </label>
@@ -133,22 +133,20 @@ export default function SignupPage() {
             </div>
           </div>
 
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
-          )}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <div className="space-y-4">
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full py-2">
               회원가입
             </Button>
             <Button
               type="button"
               variant="ghost"
-              className="w-full"
+              className="w-full py-2"
               onClick={() => navigate("/login")}
             >
               <span className="mr-1">이미 계정이 있으신가요?</span>
-              <span className="text-blue-500">로그인</span>
+              <span className="text-blue-500 hover:underline">로그인</span>
             </Button>
           </div>
         </form>

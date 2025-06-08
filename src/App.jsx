@@ -60,7 +60,7 @@ export default function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Home />
+                <Home onNavigate={onNavigate} />
               </ProtectedRoute>
             }
           />

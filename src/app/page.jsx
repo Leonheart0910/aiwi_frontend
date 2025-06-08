@@ -12,17 +12,18 @@ import {
   ShareIcon,
   MoreVerticalIcon,
 } from "@/components/icons";
+import { CreateCartModal } from "@/cart/CreateCartModal";
+import { useCart } from "@/cart/cartContext";
 
 // Home 컴포넌트
 export default function Home({ onNavigate }) {
-  // 네비게이션 이동
   const navigate = useNavigate();
-  // 사용자 메뉴 열림 상태
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  // 사이드바 열림 상태
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // 사용자 메뉴 참조
   const userMenuRef = useRef(null);
+
+  // 장바구니 관련 모달
+  const { createCart, isCreateModalOpen, setIsCreateModalOpen } = useCart();
 
   // 새 채팅 시작
   const { chatLogs, startNewChat } = useChat();
@@ -63,75 +64,102 @@ export default function Home({ onNavigate }) {
     navigate("/"); // 수동으로 홈으로만 이동
   };
 
+  // ✅ 장바구니 생성
+  const handleCreateCart = async (name) => {
+    try {
+      await createCart(name);
+    } catch (error) {
+      console.error("장바구니 생성 실패:", error);
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-white">
-      {/* 사이드바 */}
-      <div
-        className={`${
-          isSidebarOpen ? "w-64" : "w-0"
-        } transition-all duration-300 ease-in-out overflow-hidden border-r border-gray-200`}
+    <div className="flex h-screen bg-white overflow-hidden">
+      {/* Sidebar */}
+      <aside
+        className={`
+    fixed inset-y-0 left-0 z-20 w-64 bg-white border-r border-gray-200
+    transform transition-transform duration-300
+    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+  `}
       >
-        <div className="w-64">
-          <Sidebar onNavigate={onNavigate} />
-        </div>
-      </div>
+        <Sidebar onNavigate={onNavigate} />
+      </aside>
 
-      {/* 메인 컨테이너 */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* 헤더 */}
-        <header className="flex items-center justify-between p-2 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-500"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <MenuIcon className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-500"
-              onClick={handlePenClick}
-            >
-              <PenIcon className="h-5 w-5" />
-            </Button>
-          </div>
+      {/* Mobile backdrop */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-          <div className="flex items-center">
-            {/* 헤더 타이틀 */}
-            <h1 className="text-lg font-medium">쇼핑 챗봇</h1>
-            {/* 헤더 타이틀 드롭다운 아이콘 */}
-            <ChevronDownIcon className="h-4 w-4 ml-1" />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-gray-500">
-              <ShareIcon className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-gray-500">
-              <MoreVerticalIcon className="h-5 w-5" />
-            </Button>
-            {/* 사용자 메뉴 */}
-            <div className="relative" ref={userMenuRef}>
+      {/* Main content */}
+      {/* Chat area */}
+      <div
+        className={`
+    flex-1 flex flex-col overflow-hidden transition-all duration-300
+    ${isSidebarOpen ? "md:ml-64" : "md:ml-0"}
+  `}
+      >
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Header */}
+          <header className="flex items-center justify-between p-2 border-b border-gray-200">
+            <div className="flex items-center gap-2">
+              {/* Menu toggle only on small screens */}
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-8 w-8 rounded-full bg-red-500 text-white p-0"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                size="icon"
+                className="text-gray-500"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               >
-                <span className="text-xs font-bold">Plus</span>
+                <MenuIcon className="h-5 w-5" />
               </Button>
-              {/* 사용자 메뉴 모달 */}
-              {isUserMenuOpen && <UserMenu />}
-            </div>
-          </div>
-        </header>
 
-        {/* 채팅 영역 */}
-        <ChatInterface endRef={messagesEndRef} />
-      </main>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-500"
+                onClick={handlePenClick}
+              >
+                <PenIcon className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="flex items-center">
+              <h1 className="text-lg font-medium">쇼핑 챗봇</h1>
+              <ChevronDownIcon className="h-4 w-4 ml-1" />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" className="text-gray-500">
+                <ShareIcon className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-gray-500">
+                <MoreVerticalIcon className="h-5 w-5" />
+              </Button>
+              <div className="relative" ref={userMenuRef}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 rounded-full bg-red-500 text-white p-0"
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                >
+                  <span className="text-xs font-bold">Plus</span>
+                </Button>
+                {isUserMenuOpen && <UserMenu />}
+              </div>
+            </div>
+          </header>
+          {/* Chat area */}
+          <ChatInterface endRef={messagesEndRef} />
+        </div>
+      </div>
+      <CreateCartModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreate={handleCreateCart}
+      />
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// 입력 컴포넌트 (채팅 인터페이스)
 export function Input({
   className = "",
   type = "text",

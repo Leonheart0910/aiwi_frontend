@@ -42,16 +42,19 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex flex-col items-center w-full">
-      <div className="w-full text-left mb-8 px-6 pt-6">
-        <h1 className="text-xl font-bold">aiwi</h1>
-      </div>
+    <div className="flex flex-col justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="w-full max-w-md">
+        {/* 로고 / 타이틀 */}
+        <h1 className="text-3xl font-bold mb-6">aiwi</h1>
 
-      <div className="w-full flex flex-col items-center">
-        <h2 className="text-2xl font-bold mb-8">다시 오신 걸 환영합니다</h2>
+        {/* 안내 문구 */}
+        <h2 className="text-2xl font-semibold mb-8 text-center">
+          다시 오신 걸 환영합니다
+        </h2>
 
-        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
-          <div className="space-y-2">
+        {/* 로그인 폼 */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
             <Input
               type="email"
               placeholder="이메일 주소"
@@ -60,8 +63,7 @@ export default function LoginForm() {
               required
             />
           </div>
-
-          <div className="space-y-2">
+          <div>
             <Input
               type="password"
               placeholder="비밀번호"
@@ -70,31 +72,31 @@ export default function LoginForm() {
               required
             />
           </div>
-
-          <Button type="submit" disabled={isLoading} className="w-full">
+          <Button type="submit" disabled={isLoading} className="w-full py-2">
             {isLoading ? "처리 중..." : "계속"}
           </Button>
         </form>
 
-        <div className="mt-4">
-          <p>
-            계정이 없으신가요?{" "}
-            <a href="/signup" className="text-blue-500 hover:underline">
-              회원 가입
-            </a>
-          </p>
-        </div>
+        {/* 회원 가입 링크 */}
+        <p className="mt-6 text-center text-sm">
+          계정이 없으신가요?{" "}
+          <a href="/signup" className="text-blue-500 hover:underline">
+            회원 가입
+          </a>
+        </p>
       </div>
 
-      <div className="mt-auto pt-8 text-sm text-gray-500">
+      {/* 이용약관 */}
+      <footer className="mt-8 text-sm text-gray-500">
         <a
           href="https://www.notion.so"
           target="_blank"
+          rel="noopener noreferrer"
           className="hover:underline"
         >
           이용약관
         </a>
-      </div>
+      </footer>
     </div>
   );
 }

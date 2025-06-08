@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -20,10 +20,9 @@ import { useCart } from "@/cart/cartContext";
 
 export function ChatInterface({ endRef }) {
   const [input, setInput] = useState(""); // 입력 상태
-  const messagesEndRef = useRef(null); // 메시지 끝 참조
   const {
     currentChatId,
-    chatLogs,
+    // chatLogs,
     loadChatLogs,
     startNewChat,
     sendMessage,
@@ -58,16 +57,16 @@ export function ChatInterface({ endRef }) {
   }, [loadChatLogs]);
 
   // ✅ 디버깅을 위한 로그
-  useEffect(() => {
-    console.log("chatLogs: ", chatLogs);
-    console.log("currentChatId: ", currentChatId);
-    console.log("messages: ", messages);
-  }, [chatLogs, currentChatId, messages]);
+  // useEffect(() => {
+  //   console.log("chatLogs: ", chatLogs);
+  //   console.log("currentChatId: ", currentChatId);
+  //   console.log("messages: ", messages);
+  // }, [chatLogs, currentChatId, messages]);
 
   // ✅ messages가 바뀔 때 항상 하단으로 스크롤
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, messagesEndRef]);
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, endRef]);
 
   // ✅ 메시지 전송 핸들러
   const handleSendMessage = async () => {
@@ -141,7 +140,7 @@ export function ChatInterface({ endRef }) {
                 }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
+                  className={`max-w-full sm:max-w-[80%] rounded-lg p-3 ${
                     message.role === "user"
                       ? "bg-gray-100"
                       : "bg-white border border-gray-200"
@@ -151,8 +150,8 @@ export function ChatInterface({ endRef }) {
                     <TypingText
                       text={message.content}
                       onComplete={() => {
-                        setMessages((prevMessages) =>
-                          prevMessages.map((msg) =>
+                        setMessages((prev) =>
+                          prev.map((msg) =>
                             msg.id === message.id
                               ? { ...msg, isTyping: false }
                               : msg
@@ -170,8 +169,8 @@ export function ChatInterface({ endRef }) {
                           const recText = message.recommendByRank[rank];
 
                           return (
-                            <div key={`rank-row-${rank}`} className="space-y-1">
-                              <div className="grid grid-cols-3 gap-2">
+                            <div key={rank} className="space-y-1">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                                 {prods.map((prod) => (
                                   <div
                                     key={prod.product_id}
@@ -240,10 +239,9 @@ export function ChatInterface({ endRef }) {
               </div>
             ))}
 
-            {/* 로딩 스피너 */}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-lg p-3 bg-white border border-gray-200">
+                <div className="max-w-full sm:max-w-[80%] rounded-lg p-3 bg-white border border-gray-200">
                   <div className="flex items-center space-x-2">
                     <div
                       className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
@@ -262,8 +260,7 @@ export function ChatInterface({ endRef }) {
               </div>
             )}
 
-            {/* 메시지 끝 참조 */}
-            <div ref={endRef ?? messagesEndRef} />
+            <div ref={endRef} />
           </div>
         )}
       </div>
@@ -297,7 +294,7 @@ export function ChatInterface({ endRef }) {
               </Button>
               <span className="text-sm text-gray-500">검색</span>
             </div>
-            <div className="h-6 w-px bg-gray-200 mx-1"></div>
+            <div className="h-6 w-px bg-gray-200 mx-1" />
             <Button
               type="button"
               variant="ghost"

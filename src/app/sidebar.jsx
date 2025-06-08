@@ -5,7 +5,7 @@ import {
   TrashIcon,
 } from "@/components/icons";
 import { useChat } from "@/chat/chatContext";
-import { CartSection } from "@/cart/CartSection";
+import { CartSection } from "@/cart/cartSection";
 import recommendationBook from "@/assets/recommendation_book.png";
 
 export function Sidebar({ onNavigate }) {
@@ -57,7 +57,7 @@ export function Sidebar({ onNavigate }) {
   };
 
   return (
-    <aside className="w-64 flex flex-col h-full bg-white">
+    <aside className="w-64 flex flex-col h-full bg-white border-r border-gray-200">
       {/* 광고 사이트 링크 */}
       <div className="p-3 space-y-2">
         {/* 쿠팡 링크 */}
@@ -87,10 +87,8 @@ export function Sidebar({ onNavigate }) {
           </div>
         </a>
         {/* 추천 상품  */}
-        <div className="mt-auto p-3 border-y">
-          <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">
-            추천 상품
-          </h2>
+        <div className="mt-auto py-3 px-2 border-y border-gray-200">
+          <h2 className="text-xs font-medium text-gray-500 mb-2">추천 상품</h2>
           <div className="p-2 rounded-md hover:bg-gray-100">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gray-200 rounded-md overflow-hidden">
@@ -112,8 +110,8 @@ export function Sidebar({ onNavigate }) {
 
       <CartSection />
 
-      {/* 채팅 로그 (스크롤 대상용 id 추가) */}
-      <div id="chat-logs-section">
+      {/* 채팅 로그 */}
+      <div id="chat-logs-section" className="overflow-y-auto">
         {Object.entries(groupedChats).map(([group, chats]) => (
           <div key={group} className="mt-4 px-3">
             <h2 className="text-xs font-medium text-gray-500 px-2 mb-2">

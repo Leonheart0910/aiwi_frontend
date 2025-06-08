@@ -40,8 +40,8 @@ export default function LogoutPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
-      <div className="w-full max-w-md text-center space-y-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md mx-auto space-y-8 text-center">
         <h1 className="text-3xl font-bold">정말 탈퇴하시겠습니까?</h1>
 
         <div className="space-y-4">
@@ -49,7 +49,7 @@ export default function LogoutPage() {
             href="https://www.notion.so"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline block"
+            className="block text-blue-500 hover:underline"
           >
             탈퇴약관
           </a>
@@ -57,14 +57,14 @@ export default function LogoutPage() {
           <button
             onClick={handleWithdraw}
             disabled={isDeleting}
-            className="w-full p-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+            className="w-full py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
           >
             {isDeleting ? "처리 중..." : "회원 탈퇴"}
           </button>
 
           <button
             onClick={() => navigate("/")}
-            className="w-full p-3 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+            className="w-full py-3 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
           >
             돌아가기
           </button>

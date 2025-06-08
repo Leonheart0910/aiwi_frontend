@@ -2,10 +2,12 @@ import { useState, useCallback } from "react";
 import { CartContext } from "./cartContext";
 
 export function CartProvider({ children }) {
-  const [carts, setCarts] = useState([]);
-  const [currentCartId, setCurrentCartId] = useState(null);
+  const [carts, setCarts] = useState([]); // 장바구니 목록
+  const [cartItems, setCartItems] = useState([]); // 특정 장바구니 내 아이템 목록
+  const [currentCartId, setCurrentCartId] = useState(null); // 현재 선택된 장바구니 ID
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // ✅ 장바구니 목록 불러오기
   const loadCarts = useCallback(async () => {
@@ -75,7 +77,7 @@ export function CartProvider({ children }) {
         throw new Error("장바구니를 불러오는데 실패했습니다.");
       }
       const cart = await response.json();
-      setCarts(cart.items);
+      setCartItems(cart.items);
 
       return cart;
     } catch (err) {
@@ -92,7 +94,6 @@ export function CartProvider({ children }) {
       setIsLoading(true);
       setError(null);
 
-      console.log(cartId, product);
       const user_id = parseInt(localStorage.getItem("user_id"));
       const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${base}/api/v1/collection/register`, {
@@ -180,6 +181,7 @@ export function CartProvider({ children }) {
     <CartContext.Provider
       value={{
         carts,
+        cartItems,
         currentCartId,
         isLoading,
         error,
@@ -189,6 +191,8 @@ export function CartProvider({ children }) {
         removeFromCart,
         deleteCart,
         loadCarts,
+        isCreateModalOpen,
+        setIsCreateModalOpen,
       }}
     >
       {children}

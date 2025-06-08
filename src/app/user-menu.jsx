@@ -26,7 +26,7 @@ export function UserMenu() {
   };
 
   return (
-    <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+    <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
       <div className="p-2 space-y-1">
         <a
           href="/profile"
@@ -62,7 +62,7 @@ export function UserMenu() {
           <span className="text-sm">릴리즈 노트</span>
         </a>
 
-        <div className="border-t border-gray-200 my-1"></div>
+        <div className="border-t border-gray-200 my-1" />
 
         <button
           onClick={handleLogout}
