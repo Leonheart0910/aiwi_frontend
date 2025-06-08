@@ -3,9 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 
-const base =
-  import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
-
 export default function SignupPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -26,12 +23,13 @@ export default function SignupPage() {
     }));
   };
 
-  // 회원가입 요청 /api/v1/user/signup
+  // ✅ 회원가입 요청 /api/v1/user/signup
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
+      const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${base}/api/v1/user/signup`, {
         method: "POST",
         headers: {

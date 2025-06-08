@@ -9,6 +9,8 @@ import Signup from "@/app/signup";
 import DeleteAccount from "@/app/deleteAccount";
 import CartDetail from "@/cart/CartDetail";
 import Landing from "@/landing/landing";
+import { Profile } from "@/app/profile";
+import { ProtectedRoute } from "@/ProtectedRoute";
 
 export default function App() {
   const navigate = useNavigate();
@@ -23,25 +25,54 @@ export default function App() {
     <CartProvider onNavigate={onNavigate}>
       <ChatProvider onNavigate={onNavigate}>
         <Routes>
+          {/* 랜딩 페이지 라우트 추가 */}
+          <Route path="/landing" element={<Landing />} />
           {/* 로그인 페이지 */}
           <Route path="/login" element={<Login />} />
           {/* 회원가입 페이지 */}
           <Route path="/signup" element={<Signup />} />
-          {/* 로그아웃 페이지 */}
-          <Route path="/logout" element={<DeleteAccount />} />
-          {/* 채팅 인터페이스 페이지 */}
+          {/* 보호된 라우트들 */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/logout"
+            element={
+              <ProtectedRoute>
+                <DeleteAccount />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/chat/:hash"
-            element={<Home onNavigate={onNavigate} />}
+            element={
+              <ProtectedRoute>
+                <Home onNavigate={onNavigate} />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
           {/* 장바구니 페이지 */}
           <Route
             path="/cart/:collection_id"
-            element={<CartDetail onNavigate={onNavigate} />}
+            element={
+              <ProtectedRoute>
+                <CartDetail onNavigate={onNavigate} />
+              </ProtectedRoute>
+            }
           />
-          {/* 랜딩 페이지 라우트 추가 */}
-          <Route path="/landing" element={<Landing />} />
         </Routes>
       </ChatProvider>
     </CartProvider>

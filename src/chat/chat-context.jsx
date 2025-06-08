@@ -81,9 +81,9 @@ export function ChatProvider({ children, onNavigate }) {
       setError(null);
       setMessages([]);
       onNavigate(`/chat/${hash}`);
+
       // 백엔드에서 채팅 로그 GET 요청
-      const base =
-        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const base = import.meta.env.VITE_BACKEND_URL;
       const chatRes = await fetch(`${base}/api/v1/chat/${hash}`);
       if (!chatRes.ok) throw new Error("불러오기 실패");
       const chats = await chatRes.json();
@@ -215,8 +215,7 @@ export function ChatProvider({ children, onNavigate }) {
       setError(null);
 
       // 백엔드에서 채팅 목록 요청
-      const base =
-        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const base = import.meta.env.VITE_BACKEND_URL;
       const userId = parseInt(localStorage.getItem("user_id"));
       const response = await fetch(`${base}/api/v1/chat/user/${userId}`);
       if (!response.ok) {
@@ -287,11 +286,14 @@ export function ChatProvider({ children, onNavigate }) {
         }
 
         // 2. 챗봇 응답 받기
-        const base =
-          import.meta.env.VITE_USE_MOCK === "true"
-            ? "http://localhost:8000"
-            : "";
+        const base = import.meta.env.VITE_BACKEND_URL;
         const userId = parseInt(localStorage.getItem("user_id"));
+        console.log(
+          `${base}/api/v1/chat/${chatIdToUse}/${userId}/${encodeURIComponent(
+            message
+          )}`
+        );
+
         const response = await fetch(
           `${base}/api/v1/chat/${chatIdToUse}/${userId}/${encodeURIComponent(
             message

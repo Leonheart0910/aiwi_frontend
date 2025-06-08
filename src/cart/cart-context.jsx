@@ -14,8 +14,7 @@ export function CartProvider({ children }) {
       setError(null);
 
       const user_id = parseInt(localStorage.getItem("user_id"));
-      const base =
-        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${base}/api/v1/collection/list/${user_id}`);
       if (!response.ok) {
         throw new Error("장바구니 목록을 불러오는데 실패했습니다.");
@@ -49,8 +48,7 @@ export function CartProvider({ children }) {
 
       // 백엔드에 장바구니 생성 요청
       const user_id = parseInt(localStorage.getItem("user_id"));
-      const base =
-        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${base}/api/v1/collection/create`, {
         method: "POST",
         headers: {
@@ -90,8 +88,7 @@ export function CartProvider({ children }) {
       setError(null);
       setCurrentCartId(collection_id);
 
-      const base =
-        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(
         `${base}/api/v1/collection/${collection_id}`
       );
@@ -150,8 +147,7 @@ export function CartProvider({ children }) {
 
       console.log(cartId, product);
       const user_id = parseInt(localStorage.getItem("user_id"));
-      const base =
-        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${base}/api/v1/collection/register`, {
         method: "POST",
         headers: {
@@ -181,8 +177,7 @@ export function CartProvider({ children }) {
       setError(null);
 
       console.log(collectionId, itemId);
-      const base =
-        import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
+      const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(
         `${base}/api/v1/collection/${collectionId}/${itemId}`,
         {
@@ -215,10 +210,7 @@ export function CartProvider({ children }) {
         setIsLoading(true);
         setError(null);
 
-        const base =
-          import.meta.env.VITE_USE_MOCK === "true"
-            ? "http://localhost:8000"
-            : "";
+        const base = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(`${base}/api/v1/collection/${cartId}`, {
           method: "DELETE",
         });

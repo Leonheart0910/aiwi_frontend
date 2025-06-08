@@ -1,17 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-const base =
-  import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
-const userId = import.meta.env.DEV
-  ? 7
-  : parseInt(localStorage.getItem("user_id"));
-
 export default function LogoutPage() {
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleWithdraw = async () => {
+    const userId = parseInt(localStorage.getItem("user_id"));
+    // console.log(userId);
     if (!userId) {
       alert("로그인 정보를 찾을 수 없습니다.");
       return;
@@ -19,8 +15,7 @@ export default function LogoutPage() {
 
     try {
       setIsDeleting(true);
-      console.log(userId);
-
+      const base = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${base}/api/v1/user/withdraw`, {
         method: "DELETE",
         headers: {
@@ -35,7 +30,7 @@ export default function LogoutPage() {
 
       alert("탈퇴가 완료되었습니다.");
       localStorage.removeItem("user_id");
-      navigate("/login");
+      navigate("/landing");
     } catch (err) {
       console.error("탈퇴 오류:", err);
       alert("탈퇴 중 문제가 발생했습니다.");

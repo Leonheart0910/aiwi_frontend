@@ -59,12 +59,12 @@ export function CartSection() {
                 <FolderIcon className="h-4 w-4 text-gray-500" />
                 <span>{cart.collection_title}</span>
               </div>
-              <button
+              <div
                 onClick={(e) => handleDeleteCart(e, cart.collection_id)}
-                className="p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
               >
                 <TrashIcon className="h-4 w-4" />
-              </button>
+              </div>
             </button>
           ))}
         </div>

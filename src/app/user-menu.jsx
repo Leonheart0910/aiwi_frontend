@@ -22,14 +22,14 @@ export function UserMenu() {
     // 채팅 상태 초기화
     clearChat();
     // 로그인 페이지로 이동
-    navigate("/login");
+    navigate("/landing");
   };
 
   return (
     <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
       <div className="p-2 space-y-1">
         <a
-          href="#"
+          href="/profile"
           className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100"
         >
           <UserIcon className="h-4 w-4 text-gray-500" />

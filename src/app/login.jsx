@@ -3,27 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 
-const base =
-  import.meta.env.VITE_USE_MOCK === "true" ? "http://localhost:8000" : "";
-
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 로그인 처리 /api/v1/user/login
+  // ✅ 로그인 처리 /api/v1/user/login
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+    const base = import.meta.env.VITE_BACKEND_URL;
     try {
+      localStorage.removeItem("user_id");
       const response = await fetch(`${base}/api/v1/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email, password: password }),
       });
 
       if (!response.ok) {
